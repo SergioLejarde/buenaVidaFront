@@ -17,9 +17,17 @@ const vistaVitrina = (() => {
       const tarjeta = document.createElement("div");
       tarjeta.className = "card h-100 shadow-sm position-relative";
       tarjeta.dataset.id = producto.id;
+      tarjeta.style.cursor = "pointer";
 
+      // Resalte al pasar mouse (IU-04)
+      tarjeta.addEventListener("mouseenter", () => {
+        tarjeta.classList.add("shadow", "border-primary");
+      });
+      tarjeta.addEventListener("mouseleave", () => {
+        tarjeta.classList.remove("shadow", "border-primary");
+      });
 
-      // Promoción (círculo rojo)
+      // Promoción (IU-03)
       if (producto.promocion) {
         const promoBadge = document.createElement("span");
         promoBadge.className = "position-absolute top-0 start-100 translate-middle badge rounded-circle bg-danger";

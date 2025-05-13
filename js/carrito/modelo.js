@@ -1,11 +1,18 @@
+// modelo del carrito
 const modeloCarrito = (() => {
-  const URL = "http://localhost:3000/api/carrito/agregar";
+  const BASE_URL = "http://localhost:3000/api/carrito";
 
-  async function agregarAlCarrito(usuarioId, productoId, cantidad = 1) {
+  // Agregar producto al carrito
+  async function agregarAlCarrito(usuarioId, productoId, cantidad = 1, token) {
     try {
-      const response = await fetch(URL, {
+      if (!token) token = localStorage.getItem("token");
+
+      const response = await fetch(`${BASE_URL}/agregar`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
         body: JSON.stringify({ usuarioId, productoId, cantidad })
       });
 
@@ -16,7 +23,27 @@ const modeloCarrito = (() => {
     }
   }
 
+  // Obtener productos del carrito
+  async function obtenerCarrito(usuarioId, token) {
+    try {
+      if (!token) token = localStorage.getItem("token");
+
+      const response = await fetch(BASE_URL, {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) throw new Error("Error al obtener carrito");
+      return await response.json();
+    } catch (error) {
+      console.error("❌ Error al obtener carrito:", error);
+      return [];
+    }
+  }
+
   return {
-    agregarAlCarrito
+    agregarAlCarrito,
+    obtenerCarrito
   };
 })();

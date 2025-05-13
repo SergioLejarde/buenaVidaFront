@@ -1,6 +1,6 @@
 const controladorModal = (() => {
   function configurarEventos() {
-    // Al hacer clic sobre la tarjeta, mostrar modal
+    // Mostrar modal al hacer clic sobre una tarjeta de producto
     document.addEventListener("click", async (e) => {
       const tarjeta = e.target.closest(".card[data-id]");
       if (!tarjeta) return;
@@ -14,20 +14,50 @@ const controladorModal = (() => {
       }
     });
 
-    // Al hacer clic en el botón "Agregar al carrito" dentro del modal
-    document.addEventListener("click", (e) => {
+    // Agregar al carrito desde el modal
+    document.addEventListener("click", async (e) => {
       if (e.target.id === "modalAgregarCarrito") {
+        const token = localStorage.getItem("token");
         const usuarioId = parseInt(localStorage.getItem("usuarioId"));
-        if (!usuarioId) {
+
+        if (!token || !usuarioId) {
           alert("Debes iniciar sesión para agregar al carrito.");
           return;
         }
 
         const productoId = parseInt(e.target.dataset.id);
         const cantidad = parseInt(document.getElementById("modalCantidad").value);
-        modeloCarrito.agregarAlCarrito(usuarioId, productoId, cantidad);
-        e.target.textContent = "✔️ Agregado";
-        e.target.disabled = true;
+
+        try {
+          await modeloCarrito.agregarAlCarrito(usuarioId, productoId, cantidad, token);
+          e.target.textContent = "✔️ Agregado";
+          e.target.disabled = true;
+        } catch (error) {
+          alert("❌ No se pudo agregar al carrito.");
+        }
+      }
+
+      // Agregar a favoritos desde el modal
+      if (e.target.id === "modalFavorito") {
+        const token = localStorage.getItem("token");
+        const usuarioId = parseInt(localStorage.getItem("usuarioId"));
+
+        if (!token || !usuarioId) {
+          alert("Debes iniciar sesión para agregar a favoritos.");
+          return;
+        }
+
+        const productoId = parseInt(e.target.dataset.id);
+
+        try {
+          await modeloFavoritos.agregarAFavoritos(usuarioId, productoId, token);
+          e.target.classList.remove("btn-outline-danger");
+          e.target.classList.add("btn-danger");
+          e.target.textContent = "❤️";
+          e.target.disabled = true;
+        } catch (error) {
+          alert("❌ No se pudo agregar a favoritos.");
+        }
       }
     });
   }

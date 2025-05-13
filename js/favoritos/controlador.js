@@ -5,13 +5,17 @@ const controladorFavoritos = (() => {
       if (!favBtn) return;
 
       const usuarioId = parseInt(localStorage.getItem("usuarioId"));
-      if (!usuarioId) {
+      const token = localStorage.getItem("token");
+
+      if (!usuarioId || !token) {
         alert("Debes iniciar sesión para agregar a favoritos.");
         return;
       }
 
       const productoId = parseInt(favBtn.dataset.id);
-      modeloFavoritos.agregarAFavoritos(usuarioId, productoId);
+
+      modeloFavoritos.agregarAFavoritos(usuarioId, productoId, token);
+
       favBtn.classList.replace("btn-outline-danger", "btn-danger");
       favBtn.innerText = "❤️";
       favBtn.disabled = true;

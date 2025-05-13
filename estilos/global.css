@@ -1,0 +1,117 @@
+/* Paleta oficial del parcial */
+:root {
+  --verde-oscuro: #006414;
+  --verde-medio: #009929;
+  --verde-claro: #5ccb5f;
+
+  --rojo-fuerte: #e80729;
+  --rojo-claro: #ef2947;
+
+  --amarillo: #efa229;
+  --amarillo-claro: #f3b24a;
+
+  --texto-claro: #ffffff;
+  --texto-oscuro: #000000;
+  --gris-suave: #f5f5f5;
+}
+
+/* Reseteo básico */
+body {
+  font-family: "Segoe UI", sans-serif;
+  background-color: var(--gris-suave);
+  margin: 0;
+  padding: 0;
+}
+
+/* Logo centrado y responsive */
+header img {
+  max-height: 100px;
+}
+
+/* Botones globales */
+button {
+  transition: all 0.2s ease-in-out;
+}
+
+button:hover {
+  filter: brightness(1.1);
+}
+
+/* Botones específicos */
+.btn-success {
+  background-color: var(--verde-medio);
+  color: var(--texto-claro);
+  border: none;
+}
+
+.btn-success:hover {
+  background-color: var(--verde-claro);
+  color: var(--texto-oscuro);
+}
+
+.btn-danger {
+  background-color: var(--rojo-fuerte);
+  color: var(--texto-claro);
+  border: none;
+}
+
+.btn-danger:hover {
+  background-color: var(--rojo-claro);
+  color: var(--texto-oscuro);
+}
+
+/* Botones de acción en productos */
+[data-fav],
+[data-carrito] {
+  font-size: 1.2rem;
+  border-radius: 5px;
+  padding: 6px 10px;
+}
+
+/* Tarjetas de producto */
+.card:hover {
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
+  transform: scale(1.01);
+}
+
+/* Etiqueta de promoción */
+.badge.bg-danger {
+  background-color: var(--rojo-claro) !important;
+  font-size: 0.8rem;
+}
+
+/* Paginación */
+.page-item.active .page-link {
+  background-color: var(--verde-medio);
+  border-color: var(--verde-medio);
+  color: var(--texto-claro);
+}
+
+.page-link {
+  color: var(--verde-oscuro);
+}
+
+/* Buscador */
+#buscador {
+  border: 2px solid var(--verde-claro);
+}
+
+/* Modal */
+.modal-header {
+  background-color: var(--verde-oscuro);
+  color: var(--texto-claro);
+}
+
+.modal-footer .btn-success {
+  background-color: var(--verde-claro);
+}
+
+/* Responsive */
+@media screen and (max-width: 400px) {
+  header img {
+    display: block;
+    margin: 0 auto;
+    width: 100%;
+    height: auto;
+  }
+}

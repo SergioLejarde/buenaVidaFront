@@ -1,11 +1,14 @@
 const modeloFavoritos = (() => {
   const URL = "http://localhost:3000/favoritos";
 
-  async function agregarAFavoritos(usuarioId, productoId) {
+  async function agregarAFavoritos(usuarioId, productoId, token) {
     try {
       const response = await fetch(URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
         body: JSON.stringify({ usuarioId, productoId })
       });
 

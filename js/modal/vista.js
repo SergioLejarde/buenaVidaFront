@@ -17,9 +17,10 @@ const vistaModal = (() => {
               <img id="modalImagen" class="img-fluid mb-3" alt="" />
               <p id="modalDescripcion"></p>
               <p><strong>Precio:</strong> $<span id="modalPrecio"></span></p>
-              <div class="d-flex justify-content-between align-items-center">
+              <div class="d-flex justify-content-between align-items-center mb-3">
                 <input type="number" id="modalCantidad" class="form-control me-2" value="1" min="1" style="max-width: 100px;" />
-                <button class="btn btn-success" id="modalAgregarCarrito">Agregar al carrito 🛒</button>
+                <button class="btn btn-success" id="modalAgregarCarrito">Agregar 🛒</button>
+                <button class="btn btn-outline-danger" id="modalFavorito">♥</button>
               </div>
             </div>
           </div>
@@ -39,6 +40,7 @@ const vistaModal = (() => {
     document.getElementById("modalPrecio").textContent = producto.precio;
     document.getElementById("modalCantidad").value = 1;
     document.getElementById("modalAgregarCarrito").setAttribute("data-id", producto.id);
+    document.getElementById("modalFavorito").setAttribute("data-id", producto.id);
 
     const modal = new bootstrap.Modal(document.getElementById("modalProducto"));
     modal.show();

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mis Pedidos - Buena Vida</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+</head>
+<body>
+  <div class="container my-5">
+    <h2 class="text-center mb-4">📦 Mis Pedidos</h2>
+    <div id="lista-pedidos" class="list-group"></div>
+  </div>
+
+  <script>
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("Debes iniciar sesión para ver tus pedidos.");
+      window.location.href = "login.html";
+    }
+
+    fetch("http://localhost:3000/api/pedidos", {
+      headers: {
+        Authorization: "Bearer " + token
+      }
+    })
+    .then(res => {
+      if (!res.ok) throw new Error("Error al cargar pedidos");
+      return res.json();
+    })
+    .then(pedidos => {
+      const contenedor = document.getElementById("lista-pedidos");
+      if (pedidos.length === 0) {
+        contenedor.innerHTML = "<div class='text-center text-muted'>Aún no tienes pedidos.</div>";
+        return;
+      }
+
+      pedidos.forEach(pedido => {
+        const div = document.createElement("div");
+        div.className = "list-group-item";
+        div.innerHTML = `
+          <h5 class="mb-1">Pedido #${pedido.id}</h5>
+          <p class="mb-1">Total: $${pedido.total}</p>
+          <small>Fecha: ${new Date(pedido.fecha).toLocaleDateString()}</small>
+        `;
+        contenedor.appendChild(div);
+      });
+    })
+    .catch(() => {
+      alert("Error al obtener pedidos");
+    });
+  </script>
+</body>
+</html>

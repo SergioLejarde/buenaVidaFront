@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mi Cuenta - Buena Vida</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+</head>
+<body>
+  <div class="container mt-5">
+    <h2 class="text-center mb-4">👤 Mi Cuenta</h2>
+
+    <div class="list-group">
+      <a href="favoritos.html" class="list-group-item list-group-item-action">
+        ❤️ Mis Favoritos
+      </a>
+      <a href="carrito.html" class="list-group-item list-group-item-action">
+        🛒 Mi Carrito
+      </a>
+      <a href="pedidos.html" class="list-group-item list-group-item-action">
+        📦 Mis Pedidos
+      </a>
+      <button class="list-group-item list-group-item-action text-danger" id="btn-logout">
+        🔐 Cerrar Sesión
+      </button>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("btn-logout").addEventListener("click", () => {
+      localStorage.clear();
+      window.location.href = "login.html";
+    });
+  </script>
+</body>
+</html>

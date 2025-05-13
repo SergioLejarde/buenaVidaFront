@@ -12,8 +12,9 @@ const loginControlador = (() => {
       try {
         const datos = await loginModelo.login(correo, contrasena);
 
-        // Guardar usuarioId en localStorage
+        // ✅ Guardar usuarioId y token en localStorage
         localStorage.setItem("usuarioId", datos.usuarioId);
+        localStorage.setItem("token", datos.token);
 
         loginVista.mostrarExito("Inicio de sesión exitoso");
 
