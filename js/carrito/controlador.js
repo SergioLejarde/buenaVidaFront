@@ -2,74 +2,72 @@ const controladorCarrito = (() => {
   const contenedor = document.getElementById("contenedor-carrito");
   const btnFinalizar = document.getElementById("btn-finalizar");
 
-  // Agregar producto desde la vitrina
-  function configurarEventosGlobales() {
-    document.addEventListener("click", (e) => {
-      const cartBtn = e.target.closest("button[data-carrito]");
-      if (!cartBtn) return;
-
-      const usuarioId = parseInt(localStorage.getItem("usuarioId"));
-      const token = localStorage.getItem("token");
-
-      if (!usuarioId || !token) {
-        alert("Debes iniciar sesión para agregar al carrito.");
-        return;
-      }
-
-      const productoId = parseInt(cartBtn.dataset.id);
-      modeloCarrito.agregarAlCarrito(usuarioId, productoId, 1, token);
-      cartBtn.classList.replace("btn-outline-success", "btn-success");
-      cartBtn.innerText = "✔️";
-      cartBtn.disabled = true;
-    });
-  }
-
-  // Mostrar productos del carrito
   async function mostrarCarrito() {
     const usuarioId = parseInt(localStorage.getItem("usuarioId"));
     const token = localStorage.getItem("token");
 
-    if (!contenedor || !usuarioId || !token) return;
+    if (!usuarioId || !token) {
+      contenedor.innerHTML = `<div class="alert alert-warning text-center">Debes iniciar sesión para ver el carrito.</div>`;
+      return;
+    }
 
     try {
-      const respuesta = await modeloCarrito.obtenerCarrito(usuarioId, token);
-      const productos = respuesta.productos || [];
-
-      if (productos.length === 0) {
-        contenedor.innerHTML = `<div class="alert alert-info text-center">Tu carrito está vacío.</div>`;
-        return;
-      }
-
-      contenedor.innerHTML = productos.map((item) => `
-        <div class="card mb-3">
-          <div class="row g-0 align-items-center">
-            <div class="col-4">
-              <img src="assets/${item.productoId}.jpg" class="img-fluid" alt="Producto ${item.productoId}">
-            </div>
-            <div class="col-8">
-              <div class="card-body">
-                <h5 class="card-title">Producto ${item.productoId}</h5>
-                <p class="card-text">Cantidad: ${item.cantidad}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      `).join("");
-    } catch (error) {
-      console.error("❌ Error al mostrar el carrito:", error);
+      const datos = await modeloCarrito.obtenerCarrito(usuarioId, token);
+      const productos = datos.productos || [];
+      vistaCarrito.renderCarrito(productos);
+    } catch (err) {
+      console.error("❌ Error mostrando carrito:", err);
       contenedor.innerHTML = `<div class="alert alert-danger text-center">Error al cargar el carrito.</div>`;
     }
   }
 
-  function init() {
-    configurarEventosGlobales();
-    mostrarCarrito();
+  function configurarEventos() {
+    // Actualizar cantidad
+    contenedor.addEventListener("input", async (e) => {
+      if (e.target.classList.contains("cantidad-input")) {
+        const productoId = parseInt(e.target.dataset.id);
+        const nuevaCantidad = parseInt(e.target.value);
+        const usuarioId = parseInt(localStorage.getItem("usuarioId"));
+        const token = localStorage.getItem("token");
 
+        if (nuevaCantidad < 1) return;
+
+        try {
+          await modeloCarrito.actualizarCantidad(usuarioId, productoId, nuevaCantidad, token);
+          mostrarCarrito();
+        } catch (err) {
+          alert("No se pudo actualizar la cantidad.");
+        }
+      }
+    });
+
+    // Eliminar producto
+    contenedor.addEventListener("click", async (e) => {
+      if (e.target.classList.contains("eliminar-carrito")) {
+        const productoId = parseInt(e.target.dataset.id);
+        const usuarioId = parseInt(localStorage.getItem("usuarioId"));
+        const token = localStorage.getItem("token");
+
+        try {
+          await modeloCarrito.eliminarProducto(usuarioId, productoId, token);
+          mostrarCarrito();
+        } catch (err) {
+          alert("No se pudo eliminar el producto.");
+        }
+      }
+    });
+
+    // Finalizar pedido
     if (btnFinalizar) {
       btnFinalizar.addEventListener("click", () => {
         alert("✅ Pedido realizado (simulado)");
       });
     }
+  }
+
+  function init() {
+    mostrarCarrito();
+    configurarEventos();
   }
 
   return { init };

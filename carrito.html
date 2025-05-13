@@ -10,20 +10,24 @@
   <div class="container mt-5">
     <h2 class="text-center mb-4">🛒 Mi Carrito</h2>
 
-    <div id="contenedor-carrito">
-      <!-- Aquí se renderiza la lista de productos del carrito -->
+    <div id="contenedor-carrito"></div>
+
+    <!-- Total -->
+    <div class="mt-4 d-flex justify-content-between align-items-center">
+      <strong>Total:</strong>
+      <span id="total-carrito" class="fw-bold fs-5">$0</span>
     </div>
 
+    <!-- Acciones -->
     <div class="mt-4 d-flex justify-content-between">
       <a href="index.html" class="btn btn-outline-secondary">← Seguir comprando</a>
       <button class="btn btn-success" id="btn-finalizar">Finalizar pedido ✅</button>
     </div>
   </div>
 
- 
-  <!-- Scripts necesarios -->
-<script src="js/carrito/modelo.js"></script>
-<script src="js/carrito/controlador.js"></script>
-
+  <!-- Scripts -->
+  <script src="js/carrito/modelo.js"></script>
+  <script src="js/carrito/vista.js"></script>
+  <script src="js/carrito/controlador.js"></script>
 </body>
 </html>
