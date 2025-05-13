@@ -2,7 +2,7 @@ const controladorCarrito = (() => {
   const contenedor = document.getElementById("contenedor-carrito");
   const btnFinalizar = document.getElementById("btn-finalizar");
 
-  // Agregar producto desde la vitrina (cuando el botón tiene data-carrito)
+  // Agregar producto desde la vitrina
   function configurarEventosGlobales() {
     document.addEventListener("click", (e) => {
       const cartBtn = e.target.closest("button[data-carrito]");
@@ -24,36 +24,41 @@ const controladorCarrito = (() => {
     });
   }
 
-  // Mostrar productos del carrito (para carrito.html)
+  // Mostrar productos del carrito
   async function mostrarCarrito() {
     const usuarioId = parseInt(localStorage.getItem("usuarioId"));
     const token = localStorage.getItem("token");
 
     if (!contenedor || !usuarioId || !token) return;
 
-    const productos = await modeloCarrito.obtenerCarrito(usuarioId, token);
+    try {
+      const respuesta = await modeloCarrito.obtenerCarrito(usuarioId, token);
+      const productos = respuesta.productos || [];
 
-    if (productos.length === 0) {
-      contenedor.innerHTML = `<div class="alert alert-info text-center">Tu carrito está vacío.</div>`;
-      return;
-    }
+      if (productos.length === 0) {
+        contenedor.innerHTML = `<div class="alert alert-info text-center">Tu carrito está vacío.</div>`;
+        return;
+      }
 
-    contenedor.innerHTML = productos.map((item) => `
-      <div class="card mb-3">
-        <div class="row g-0 align-items-center">
-          <div class="col-4">
-            <img src="assets/${item.producto.id}.jpg" class="img-fluid" alt="${item.producto.nombre}">
-          </div>
-          <div class="col-8">
-            <div class="card-body">
-              <h5 class="card-title">${item.producto.nombre}</h5>
-              <p class="card-text">Cantidad: ${item.cantidad}</p>
-              <p class="card-text"><strong>Precio:</strong> $${item.producto.precio}</p>
+      contenedor.innerHTML = productos.map((item) => `
+        <div class="card mb-3">
+          <div class="row g-0 align-items-center">
+            <div class="col-4">
+              <img src="assets/${item.productoId}.jpg" class="img-fluid" alt="Producto ${item.productoId}">
+            </div>
+            <div class="col-8">
+              <div class="card-body">
+                <h5 class="card-title">Producto ${item.productoId}</h5>
+                <p class="card-text">Cantidad: ${item.cantidad}</p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    `).join("");
+      `).join("");
+    } catch (error) {
+      console.error("❌ Error al mostrar el carrito:", error);
+      contenedor.innerHTML = `<div class="alert alert-danger text-center">Error al cargar el carrito.</div>`;
+    }
   }
 
   function init() {

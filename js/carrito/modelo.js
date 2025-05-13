@@ -1,4 +1,3 @@
-// modelo del carrito
 const modeloCarrito = (() => {
   const BASE_URL = "http://localhost:3000/api/carrito";
 
@@ -28,7 +27,8 @@ const modeloCarrito = (() => {
     try {
       if (!token) token = localStorage.getItem("token");
 
-      const response = await fetch(BASE_URL, {
+      const response = await fetch(`${BASE_URL}?usuarioId=${usuarioId}`, {
+        method: "GET",
         headers: {
           "Authorization": `Bearer ${token}`
         }
@@ -38,7 +38,7 @@ const modeloCarrito = (() => {
       return await response.json();
     } catch (error) {
       console.error("❌ Error al obtener carrito:", error);
-      return [];
+      return { productos: [] };
     }
   }
 

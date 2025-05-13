@@ -4,7 +4,7 @@ const vistaCarrito = (() => {
   function renderCarrito(productos) {
     contenedor.innerHTML = "";
 
-    if (productos.length === 0) {
+    if (!Array.isArray(productos) || productos.length === 0) {
       contenedor.innerHTML = `<div class="text-center text-muted">Tu carrito está vacío.</div>`;
       return;
     }
@@ -19,7 +19,7 @@ const vistaCarrito = (() => {
         </div>
         <div class="col-5">
           <h6 class="mb-1">${item.producto.nombre}</h6>
-          <p class="mb-0 small">${item.producto.descripcion.slice(0, 60)}...</p>
+          <p class="mb-0 small">${item.producto.descripcion?.slice(0, 60) || ''}...</p>
           <p class="fw-bold">$${item.producto.precio}</p>
         </div>
         <div class="col-2">
