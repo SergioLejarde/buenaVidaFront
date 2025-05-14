@@ -9,17 +9,21 @@ const controladorVitrina = (() => {
   const paginacion = document.getElementById("paginacion");
   const contenedor = document.getElementById("contenedor-productos");
 
-  // Cargar productos desde el backend con filtros
+  // NUEVO: inputs del filtro de precio
+  const inputMin = document.getElementById("precio-min");
+  const inputMax = document.getElementById("precio-max");
+
   async function cargarProductos() {
     const q = buscador.value.trim();
+    const min = parseFloat(inputMin?.value || "0");
+    const max = parseFloat(inputMax?.value || "99999");
 
     const filtros = {
       page: paginaActual,
       limit: limite,
       q,
-      min: 0,
-      max: 99999
-      // promo: false ← eliminado para evitar filtrar por error
+      min,
+      max
     };
 
     try {
@@ -35,7 +39,6 @@ const controladorVitrina = (() => {
     }
   }
 
-  // Configurar eventos de búsqueda, paginación y botones ♥ 🛒
   function configurarEventos() {
     btnBuscar.addEventListener("click", () => {
       paginaActual = 1;

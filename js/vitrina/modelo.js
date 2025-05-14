@@ -6,23 +6,25 @@ const modeloVitrina = (() => {
   }
 
   // Obtener productos con filtros
-  async function obtenerProductos({ page = 1, limit = 12, q = "", min = 0, max = 99999, promo = false } = {}) {
+  async function obtenerProductos({ page = 1, limit = 12, q = "", min = 0, max = 99999, promo } = {}) {
     try {
       const params = new URLSearchParams({
-        page,
-        limit,
-        q,
-        min,
-        max,
-        promo
+        page: String(page),
+        limit: String(limit),
+        q: q || "",
+        min: String(min),
+        max: String(max)
       });
+
+      if (promo !== undefined) {
+        params.append("promo", String(promo));
+      }
 
       const response = await fetch(`${URL_BASE}/api/productos?${params.toString()}`);
       if (!response.ok) throw new Error("Error al obtener productos");
 
       const data = await response.json();
 
-      // ⚠️ Asegurarse de devolver exactamente lo que espera el controlador
       return {
         productos: data.productos || [],
         totalPaginas: data.totalPaginas || 1
@@ -33,7 +35,6 @@ const modeloVitrina = (() => {
     }
   }
 
-  // Agregar producto a favoritos
   async function agregarAFavoritos(usuarioId, productoId) {
     try {
       const token = obtenerToken();
@@ -53,7 +54,6 @@ const modeloVitrina = (() => {
     }
   }
 
-  // Agregar producto al carrito
   async function agregarAlCarrito(usuarioId, productoId, cantidad) {
     try {
       const token = obtenerToken();

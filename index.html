@@ -18,9 +18,7 @@
       <a href="cuenta.html" class="btn btn-outline-secondary" title="Mi Cuenta">👤</a>
       <button id="btn-carrito" class="btn btn-outline-success position-relative" title="Mi carrito">
         🛒
-        <span id="contador-carrito" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-          0
-        </span>
+        <span id="contador-carrito" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
       </button>
     </div>
   </nav>
@@ -33,10 +31,10 @@
         <input type="text" id="buscador" class="form-control" placeholder="Buscar productos..." />
       </div>
       <div class="col-md-3">
-        <input type="number" id="filtro-min" class="form-control" placeholder="Precio mínimo">
+        <input type="number" id="precio-min" class="form-control" placeholder="Precio mínimo">
       </div>
       <div class="col-md-3">
-        <input type="number" id="filtro-max" class="form-control" placeholder="Precio máximo">
+        <input type="number" id="precio-max" class="form-control" placeholder="Precio máximo">
       </div>
       <div class="col-md-2">
         <button class="btn btn-primary w-100" id="btn-buscar">Buscar</button>
@@ -49,8 +47,8 @@
     </div>
 
     <!-- Paginación -->
-    <nav class="mt-4">
-      <ul class="pagination justify-content-center" id="paginacion"></ul>
+    <nav class="mt-4" id="paginacion">
+      <!-- renderPaginacion() inyecta el <ul class="pagination"> -->
     </nav>
   </main>
 
@@ -91,7 +89,6 @@
       resumenCarrito.classList.toggle("d-none");
     });
 
-    // Actualizar contador del carrito si ya hay productos
     const contador = document.getElementById("contador-carrito");
     const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
     contador.textContent = carrito.length;

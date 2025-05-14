@@ -19,7 +19,6 @@ const vistaVitrina = (() => {
       tarjeta.dataset.id = producto.id;
       tarjeta.style.cursor = "pointer";
 
-      // Resalte al pasar mouse (IU-04)
       tarjeta.addEventListener("mouseenter", () => {
         tarjeta.classList.add("shadow", "border-primary");
       });
@@ -27,7 +26,6 @@ const vistaVitrina = (() => {
         tarjeta.classList.remove("shadow", "border-primary");
       });
 
-      // Promoción (IU-03)
       if (producto.promocion) {
         const promoBadge = document.createElement("span");
         promoBadge.className = "position-absolute top-0 start-100 translate-middle badge rounded-circle bg-danger";
@@ -57,12 +55,25 @@ const vistaVitrina = (() => {
   function renderPaginacion(totalPaginas, paginaActual) {
     paginacion.innerHTML = "";
 
+    if (totalPaginas <= 1) return;
+
+    const ul = document.createElement("ul");
+    ul.className = "pagination justify-content-center mt-4";
+
     for (let i = 1; i <= totalPaginas; i++) {
       const li = document.createElement("li");
       li.className = `page-item ${i === paginaActual ? "active" : ""}`;
-      li.innerHTML = `<button class="page-link" data-pagina="${i}">${i}</button>`;
-      paginacion.appendChild(li);
+
+      const button = document.createElement("button");
+      button.className = "page-link";
+      button.textContent = i.toString();
+      button.setAttribute("data-pagina", i.toString());
+
+      li.appendChild(button);
+      ul.appendChild(li);
     }
+
+    paginacion.appendChild(ul);
   }
 
   return {
