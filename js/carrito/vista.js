@@ -16,7 +16,7 @@ const vistaCarrito = (() => {
       const producto = item.producto || {
         id: item.productoId,
         nombre: `Producto ${item.productoId}`,
-        precio: 0
+        precio: item.precio || 0
       };
 
       const subtotal = producto.precio * item.cantidad;

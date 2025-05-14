@@ -1,100 +1,76 @@
-const controladorVitrina = (() => {
-  let paginaActual = 1;
-  let totalPaginas = 1;
-  const limite = 12;
+const controladorCarrito = (() => {
+  const contenedor = document.getElementById("contenedor-carrito");
+  const totalSpan = document.getElementById("total-carrito");
+  const btnFinalizar = document.getElementById("btn-finalizar");
 
-  // Elementos del DOM
-  const buscador = document.getElementById("buscador");
-  const btnBuscar = document.getElementById("btn-buscar");
-  const paginacion = document.getElementById("paginacion");
-  const contenedor = document.getElementById("contenedor-productos");
+  const usuarioId = parseInt(localStorage.getItem("usuarioId") || "0");
+  const token = localStorage.getItem("token");
 
-  // Nuevos elementos para filtro por precio
-  const filtroMin = document.getElementById("filtro-min");
-  const filtroMax = document.getElementById("filtro-max");
+  async function cargarCarrito() {
+    if (!usuarioId || !token) {
+      alert("Debes iniciar sesión para ver tu carrito.");
+      return;
+    }
 
-  // Cargar productos desde el backend con filtros
-  async function cargarProductos() {
-    const q = buscador.value.trim();
-    const min = filtroMin?.value ? parseFloat(filtroMin.value) : 0;
-    const max = filtroMax?.value ? parseFloat(filtroMax.value) : 99999;
-
-    const filtros = {
-      page: paginaActual,
-      limit: limite,
-      q,
-      min,
-      max,
-      promo: false // si más adelante quieres incluir checkbox de promociones
-    };
-
-    const { productos, totalPaginas: total } = await modeloVitrina.obtenerProductos(filtros);
-    totalPaginas = total;
-
-    vistaVitrina.renderProductos(productos);
-    vistaVitrina.renderPaginacion(totalPaginas, paginaActual);
+    const respuesta = await modeloCarrito.obtenerCarrito(usuarioId, token);
+    const productos = respuesta.productos || [];
+    vistaCarrito.renderCarrito(productos);
   }
 
   function configurarEventos() {
-    btnBuscar.addEventListener("click", () => {
-      paginaActual = 1;
-      cargarProductos();
-    });
-
-    paginacion.addEventListener("click", (e) => {
-      const btn = e.target.closest("button[data-pagina]");
-      if (btn) {
-        paginaActual = parseInt(btn.dataset.pagina);
-        cargarProductos();
-      }
-    });
-
     contenedor.addEventListener("click", async (e) => {
-      const favBtn = e.target.closest("button[data-fav]");
-      const cartBtn = e.target.closest("button[data-carrito]");
-      const token = localStorage.getItem("token");
-      const usuarioIdRaw = localStorage.getItem("usuarioId");
-      const usuarioId = usuarioIdRaw ? parseInt(usuarioIdRaw) : null;
+      const eliminarBtn = e.target.closest(".eliminar-carrito");
 
-      if (!token || !usuarioId) {
-        alert("Debes iniciar sesión para usar esta función.");
-        return;
+      if (eliminarBtn) {
+        const productoId = parseInt(eliminarBtn.dataset.id);
+        await modeloCarrito.eliminarProducto(usuarioId, productoId, token);
+        await cargarCarrito();
       }
+    });
 
-      if (favBtn) {
-        const productoId = parseInt(favBtn.dataset.id);
-        try {
-          await modeloVitrina.agregarAFavoritos(usuarioId, productoId);
-          favBtn.classList.remove("btn-outline-danger");
-          favBtn.classList.add("btn-danger");
-          favBtn.innerText = "❤️";
-          favBtn.disabled = true;
-        } catch (err) {
-          alert("No se pudo agregar a favoritos.");
+    contenedor.addEventListener("change", async (e) => {
+      const inputCantidad = e.target.closest(".cantidad-input");
+      if (inputCantidad) {
+        const nuevaCantidad = parseInt(inputCantidad.value);
+        const productoId = parseInt(inputCantidad.dataset.id);
+        if (nuevaCantidad > 0) {
+          await modeloCarrito.actualizarCantidad(usuarioId, productoId, nuevaCantidad, token);
+          await cargarCarrito();
         }
       }
+    });
 
-      if (cartBtn) {
-        const productoId = parseInt(cartBtn.dataset.id);
+    btnFinalizar.addEventListener("click", async () => {
+      if (confirm("¿Deseas realizar el pedido?")) {
         try {
-          await modeloVitrina.agregarAlCarrito(usuarioId, productoId, 1);
-          cartBtn.classList.remove("btn-outline-success");
-          cartBtn.classList.add("btn-success");
-          cartBtn.innerText = "✔️";
-          cartBtn.disabled = true;
+          const response = await fetch("http://localhost:3000/api/pedidos", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({ usuarioId })
+          });
+
+          if (!response.ok) throw new Error("Error al realizar el pedido");
+
+          alert("✅ Pedido realizado con éxito");
+          await modeloCarrito.vaciarCarrito(usuarioId, token);
+          await cargarCarrito();
         } catch (err) {
-          alert("No se pudo agregar al carrito.");
+          console.error("❌ Error al finalizar pedido:", err);
+          alert("Hubo un error al procesar tu pedido.");
         }
       }
     });
   }
 
   function init() {
+    cargarCarrito();
     configurarEventos();
-    cargarProductos();
   }
 
   return { init };
 })();
 
-document.addEventListener("DOMContentLoaded", controladorVitrina.init);
+document.addEventListener("DOMContentLoaded", controladorCarrito.init);
