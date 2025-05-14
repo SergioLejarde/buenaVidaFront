@@ -1,8 +1,6 @@
-// vista del modal
 const vistaModal = (() => {
   function crearEstructuraModal() {
-    const existente = document.getElementById("modalProducto");
-    if (existente) return;
+    if (document.getElementById("modalProducto")) return;
 
     const modalHTML = document.createElement("div");
     modalHTML.innerHTML = `
@@ -14,8 +12,8 @@ const vistaModal = (() => {
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
-              <img id="modalImagen" class="img-fluid mb-3" alt="" />
-              <p id="modalDescripcion"></p>
+              <img id="modalImagen" class="img-fluid mb-3 rounded shadow-sm" alt="" />
+              <p id="modalDescripcion" class="text-muted small"></p>
               <p><strong>Precio:</strong> $<span id="modalPrecio"></span></p>
               <div class="d-flex justify-content-between align-items-center mb-3">
                 <input type="number" id="modalCantidad" class="form-control me-2" value="1" min="1" style="max-width: 100px;" />
@@ -39,8 +37,19 @@ const vistaModal = (() => {
     document.getElementById("modalDescripcion").textContent = producto.descripcion;
     document.getElementById("modalPrecio").textContent = producto.precio;
     document.getElementById("modalCantidad").value = 1;
-    document.getElementById("modalAgregarCarrito").setAttribute("data-id", producto.id);
-    document.getElementById("modalFavorito").setAttribute("data-id", producto.id);
+
+    const agregarBtn = document.getElementById("modalAgregarCarrito");
+    const favBtn = document.getElementById("modalFavorito");
+
+    agregarBtn.disabled = false;
+    agregarBtn.textContent = "Agregar 🛒";
+    favBtn.disabled = false;
+    favBtn.textContent = "♥";
+    favBtn.classList.remove("btn-danger");
+    favBtn.classList.add("btn-outline-danger");
+
+    agregarBtn.setAttribute("data-id", producto.id);
+    favBtn.setAttribute("data-id", producto.id);
 
     const modal = new bootstrap.Modal(document.getElementById("modalProducto"));
     modal.show();

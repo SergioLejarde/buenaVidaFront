@@ -30,7 +30,7 @@
           class="form-control"
           required
           minlength="8"
-          pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^\\w\\d]).+$"
+          pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).+$"
           title="Debe tener al menos una mayúscula, una minúscula, un número y un símbolo."
         />
       </div>
@@ -40,7 +40,9 @@
       </div>
     </form>
   </div>
-
+  
+  <script src="js/registro/modelo.js"></script>
+  <script src="js/registro/vista.js"></script>
   <script src="js/registro/controlador.js"></script>
 </body>
 </html>

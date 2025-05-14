@@ -3,14 +3,9 @@ const modeloModal = (() => {
 
   async function obtenerProductoPorId(id) {
     try {
-      const response = await fetch(`${URL}?page=1&limit=100`);
-      if (!response.ok) throw new Error("Error al obtener productos");
-
-      const productos = await response.json();
-      const encontrado = productos.find((p) => p.id === id);
-      if (!encontrado) throw new Error("Producto no encontrado");
-
-      return encontrado;
+      const response = await fetch(`${URL}/${id}`);
+      if (!response.ok) throw new Error("Producto no encontrado");
+      return await response.json();
     } catch (error) {
       console.error("❌ Error al obtener producto por ID:", error);
       throw error;

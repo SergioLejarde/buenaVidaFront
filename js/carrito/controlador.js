@@ -1,76 +1,100 @@
-const controladorCarrito = (() => {
-  const contenedor = document.getElementById("contenedor-carrito");
-  const btnFinalizar = document.getElementById("btn-finalizar");
+const controladorVitrina = (() => {
+  let paginaActual = 1;
+  let totalPaginas = 1;
+  const limite = 12;
 
-  async function mostrarCarrito() {
-    const usuarioId = parseInt(localStorage.getItem("usuarioId"));
-    const token = localStorage.getItem("token");
+  // Elementos del DOM
+  const buscador = document.getElementById("buscador");
+  const btnBuscar = document.getElementById("btn-buscar");
+  const paginacion = document.getElementById("paginacion");
+  const contenedor = document.getElementById("contenedor-productos");
 
-    if (!usuarioId || !token) {
-      contenedor.innerHTML = `<div class="alert alert-warning text-center">Debes iniciar sesión para ver el carrito.</div>`;
-      return;
-    }
+  // Nuevos elementos para filtro por precio
+  const filtroMin = document.getElementById("filtro-min");
+  const filtroMax = document.getElementById("filtro-max");
 
-    try {
-      const datos = await modeloCarrito.obtenerCarrito(usuarioId, token);
-      const productos = datos.productos || [];
-      vistaCarrito.renderCarrito(productos);
-    } catch (err) {
-      console.error("❌ Error mostrando carrito:", err);
-      contenedor.innerHTML = `<div class="alert alert-danger text-center">Error al cargar el carrito.</div>`;
-    }
+  // Cargar productos desde el backend con filtros
+  async function cargarProductos() {
+    const q = buscador.value.trim();
+    const min = filtroMin?.value ? parseFloat(filtroMin.value) : 0;
+    const max = filtroMax?.value ? parseFloat(filtroMax.value) : 99999;
+
+    const filtros = {
+      page: paginaActual,
+      limit: limite,
+      q,
+      min,
+      max,
+      promo: false // si más adelante quieres incluir checkbox de promociones
+    };
+
+    const { productos, totalPaginas: total } = await modeloVitrina.obtenerProductos(filtros);
+    totalPaginas = total;
+
+    vistaVitrina.renderProductos(productos);
+    vistaVitrina.renderPaginacion(totalPaginas, paginaActual);
   }
 
   function configurarEventos() {
-    // Actualizar cantidad
-    contenedor.addEventListener("input", async (e) => {
-      if (e.target.classList.contains("cantidad-input")) {
-        const productoId = parseInt(e.target.dataset.id);
-        const nuevaCantidad = parseInt(e.target.value);
-        const usuarioId = parseInt(localStorage.getItem("usuarioId"));
-        const token = localStorage.getItem("token");
+    btnBuscar.addEventListener("click", () => {
+      paginaActual = 1;
+      cargarProductos();
+    });
 
-        if (nuevaCantidad < 1) return;
-
-        try {
-          await modeloCarrito.actualizarCantidad(usuarioId, productoId, nuevaCantidad, token);
-          mostrarCarrito();
-        } catch (err) {
-          alert("No se pudo actualizar la cantidad.");
-        }
+    paginacion.addEventListener("click", (e) => {
+      const btn = e.target.closest("button[data-pagina]");
+      if (btn) {
+        paginaActual = parseInt(btn.dataset.pagina);
+        cargarProductos();
       }
     });
 
-    // Eliminar producto
     contenedor.addEventListener("click", async (e) => {
-      if (e.target.classList.contains("eliminar-carrito")) {
-        const productoId = parseInt(e.target.dataset.id);
-        const usuarioId = parseInt(localStorage.getItem("usuarioId"));
-        const token = localStorage.getItem("token");
+      const favBtn = e.target.closest("button[data-fav]");
+      const cartBtn = e.target.closest("button[data-carrito]");
+      const token = localStorage.getItem("token");
+      const usuarioIdRaw = localStorage.getItem("usuarioId");
+      const usuarioId = usuarioIdRaw ? parseInt(usuarioIdRaw) : null;
 
+      if (!token || !usuarioId) {
+        alert("Debes iniciar sesión para usar esta función.");
+        return;
+      }
+
+      if (favBtn) {
+        const productoId = parseInt(favBtn.dataset.id);
         try {
-          await modeloCarrito.eliminarProducto(usuarioId, productoId, token);
-          mostrarCarrito();
+          await modeloVitrina.agregarAFavoritos(usuarioId, productoId);
+          favBtn.classList.remove("btn-outline-danger");
+          favBtn.classList.add("btn-danger");
+          favBtn.innerText = "❤️";
+          favBtn.disabled = true;
         } catch (err) {
-          alert("No se pudo eliminar el producto.");
+          alert("No se pudo agregar a favoritos.");
+        }
+      }
+
+      if (cartBtn) {
+        const productoId = parseInt(cartBtn.dataset.id);
+        try {
+          await modeloVitrina.agregarAlCarrito(usuarioId, productoId, 1);
+          cartBtn.classList.remove("btn-outline-success");
+          cartBtn.classList.add("btn-success");
+          cartBtn.innerText = "✔️";
+          cartBtn.disabled = true;
+        } catch (err) {
+          alert("No se pudo agregar al carrito.");
         }
       }
     });
-
-    // Finalizar pedido
-    if (btnFinalizar) {
-      btnFinalizar.addEventListener("click", () => {
-        alert("✅ Pedido realizado (simulado)");
-      });
-    }
   }
 
   function init() {
-    mostrarCarrito();
     configurarEventos();
+    cargarProductos();
   }
 
   return { init };
 })();
 
-document.addEventListener("DOMContentLoaded", controladorCarrito.init);
+document.addEventListener("DOMContentLoaded", controladorVitrina.init);

@@ -1,80 +1,99 @@
 const modeloCarrito = (() => {
-  const BASE_URL = "http://localhost:3000/api/carrito";
+  const URL_BASE = "http://localhost:3000/api/carrito";
 
-  // Agrega un producto al carrito
-  async function agregarAlCarrito(usuarioId, productoId, cantidad = 1, token) {
-    token = token || localStorage.getItem("token");
-
-    if (!usuarioId || !productoId || !token) throw new Error("Faltan datos para agregar al carrito");
-
-    const response = await fetch(`${BASE_URL}/agregar`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
-      },
-      body: JSON.stringify({ usuarioId, productoId, cantidad })
-    });
-
-    if (!response.ok) throw new Error("No se pudo agregar al carrito");
+  function obtenerToken() {
+    return localStorage.getItem("token");
   }
 
-  // Obtiene los productos del carrito
-  async function obtenerCarrito(usuarioId, token) {
-    token = token || localStorage.getItem("token");
+  async function agregarAlCarrito(usuarioId, productoId, cantidad = 1, token = obtenerToken()) {
+    try {
+      const response = await fetch(`${URL_BASE}/agregar`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({ usuarioId, productoId, cantidad })
+      });
 
-    if (!usuarioId || !token) throw new Error("No autorizado");
-
-    const response = await fetch(BASE_URL, {
-      headers: {
-        "Authorization": `Bearer ${token}`
-      }
-    });
-
-    if (!response.ok) throw new Error("Error al obtener carrito");
-    return await response.json();
+      if (!response.ok) throw new Error("Error al agregar al carrito");
+      return await response.json();
+    } catch (err) {
+      console.error("❌ Error agregarAlCarrito:", err);
+      throw err;
+    }
   }
 
-  // Actualiza la cantidad de un producto
-  async function actualizarCantidad(usuarioId, productoId, cantidad, token) {
-    token = token || localStorage.getItem("token");
+  async function obtenerCarrito(usuarioId, token = obtenerToken()) {
+    try {
+      const response = await fetch(`${URL_BASE}?usuarioId=${usuarioId}`, {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
 
-    if (!usuarioId || !productoId || cantidad < 1 || !token) throw new Error("Datos inválidos");
-
-    const response = await fetch(`${BASE_URL}/actualizar`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
-      },
-      body: JSON.stringify({ usuarioId, productoId, cantidad })
-    });
-
-    if (!response.ok) throw new Error("No se pudo actualizar la cantidad");
+      if (!response.ok) throw new Error("Error al obtener carrito");
+      return await response.json();
+    } catch (err) {
+      console.error("❌ Error obtenerCarrito:", err);
+      return [];
+    }
   }
 
-  // Elimina un producto del carrito
-  async function eliminarProducto(usuarioId, productoId, token) {
-    token = token || localStorage.getItem("token");
+  async function eliminarProducto(usuarioId, productoId, token = obtenerToken()) {
+    try {
+      const response = await fetch(`${URL_BASE}/eliminar`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({ usuarioId, productoId })
+      });
 
-    if (!usuarioId || !productoId || !token) throw new Error("Datos inválidos para eliminar producto");
+      if (!response.ok) throw new Error("Error al eliminar producto del carrito");
+    } catch (err) {
+      console.error("❌ Error eliminarProducto:", err);
+    }
+  }
 
-    const response = await fetch(`${BASE_URL}/eliminar`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
-      },
-      body: JSON.stringify({ usuarioId, productoId })
-    });
+  async function actualizarCantidad(usuarioId, productoId, cantidad, token = obtenerToken()) {
+    try {
+      const response = await fetch(`${URL_BASE}/actualizar`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({ usuarioId, productoId, cantidad })
+      });
 
-    if (!response.ok) throw new Error("No se pudo eliminar el producto del carrito");
+      if (!response.ok) throw new Error("Error al actualizar cantidad");
+    } catch (err) {
+      console.error("❌ Error actualizarCantidad:", err);
+    }
+  }
+
+  async function vaciarCarrito(usuarioId, token = obtenerToken()) {
+    try {
+      const response = await fetch(`${URL_BASE}/vaciar`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({ usuarioId })
+      });
+
+      if (!response.ok) throw new Error("Error al vaciar carrito");
+    } catch (err) {
+      console.error("❌ Error vaciarCarrito:", err);
+    }
   }
 
   return {
     agregarAlCarrito,
     obtenerCarrito,
+    eliminarProducto,
     actualizarCantidad,
-    eliminarProducto
+    vaciarCarrito
   };
 })();

@@ -27,12 +27,18 @@
 
   <!-- Zona principal -->
   <main class="container my-4">
-    <!-- Buscador -->
-    <div class="row mb-4">
-      <div class="col-md-8">
+    <!-- Buscador y filtros -->
+    <div class="row mb-4 g-2">
+      <div class="col-md-4">
         <input type="text" id="buscador" class="form-control" placeholder="Buscar productos..." />
       </div>
-      <div class="col-md-4">
+      <div class="col-md-3">
+        <input type="number" id="filtro-min" class="form-control" placeholder="Precio mínimo">
+      </div>
+      <div class="col-md-3">
+        <input type="number" id="filtro-max" class="form-control" placeholder="Precio máximo">
+      </div>
+      <div class="col-md-2">
         <button class="btn btn-primary w-100" id="btn-buscar">Buscar</button>
       </div>
     </div>

@@ -28,11 +28,17 @@ const controladorModal = (() => {
         const productoId = parseInt(e.target.dataset.id);
         const cantidad = parseInt(document.getElementById("modalCantidad").value);
 
+        if (isNaN(cantidad) || cantidad < 1) {
+          alert("Cantidad inválida.");
+          return;
+        }
+
         try {
-          await modeloCarrito.agregarAlCarrito(usuarioId, productoId, cantidad, token);
+          await modeloVitrina.agregarAlCarrito(usuarioId, productoId, cantidad);
           e.target.textContent = "✔️ Agregado";
           e.target.disabled = true;
         } catch (error) {
+          console.error(error);
           alert("❌ No se pudo agregar al carrito.");
         }
       }
@@ -50,12 +56,13 @@ const controladorModal = (() => {
         const productoId = parseInt(e.target.dataset.id);
 
         try {
-          await modeloFavoritos.agregarAFavoritos(usuarioId, productoId, token);
+          await modeloVitrina.agregarAFavoritos(usuarioId, productoId);
           e.target.classList.remove("btn-outline-danger");
           e.target.classList.add("btn-danger");
           e.target.textContent = "❤️";
           e.target.disabled = true;
         } catch (error) {
+          console.error(error);
           alert("❌ No se pudo agregar a favoritos.");
         }
       }
