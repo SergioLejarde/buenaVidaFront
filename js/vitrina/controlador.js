@@ -18,13 +18,21 @@ const controladorVitrina = (() => {
       limit: limite,
       q,
       min: 0,
-      max: 99999,
-      promo: false
+      max: 99999
+      // promo: false ← eliminado para evitar filtrar por error
     };
 
-    const productos = await modeloVitrina.obtenerProductos(filtros);
-    vistaVitrina.renderProductos(productos);
-    vistaVitrina.renderPaginacion(totalPaginas, paginaActual);
+    try {
+      const { productos, totalPaginas: total } = await modeloVitrina.obtenerProductos(filtros);
+      console.log("🟢 totalPaginas desde backend:", total);
+      totalPaginas = total;
+      vistaVitrina.renderProductos(productos);
+      vistaVitrina.renderPaginacion(totalPaginas, paginaActual);
+    } catch (error) {
+      console.error("❌ Error cargando productos:", error);
+      vistaVitrina.renderProductos([]);
+      vistaVitrina.renderPaginacion(1, 1);
+    }
   }
 
   // Configurar eventos de búsqueda, paginación y botones ♥ 🛒

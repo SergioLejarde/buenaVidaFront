@@ -19,10 +19,17 @@ const modeloVitrina = (() => {
 
       const response = await fetch(`${URL_BASE}/api/productos?${params.toString()}`);
       if (!response.ok) throw new Error("Error al obtener productos");
-      return await response.json();
+
+      const data = await response.json();
+
+      // ⚠️ Asegurarse de devolver exactamente lo que espera el controlador
+      return {
+        productos: data.productos || [],
+        totalPaginas: data.totalPaginas || 1
+      };
     } catch (error) {
       console.error("❌ Error en obtenerProductos:", error);
-      return [];
+      return { productos: [], totalPaginas: 1 };
     }
   }
 
