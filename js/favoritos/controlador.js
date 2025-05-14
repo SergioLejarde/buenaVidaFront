@@ -1,28 +1,21 @@
 const controladorFavoritos = (() => {
-  function configurarEventos() {
-    document.addEventListener("click", (e) => {
-      const favBtn = e.target.closest("button[data-fav]");
-      if (!favBtn) return;
+  async function cargarFavoritos() {
+    const usuarioId = parseInt(localStorage.getItem("usuarioId"));
+    const token = localStorage.getItem("token");
 
-      const usuarioId = parseInt(localStorage.getItem("usuarioId"));
-      const token = localStorage.getItem("token");
+    if (!usuarioId || !token) {
+      alert("Debes iniciar sesión para ver tus favoritos.");
+      window.location.href = "login.html";
+      return;
+    }
 
-      if (!usuarioId || !token) {
-        alert("Debes iniciar sesión para agregar a favoritos.");
-        return;
-      }
-
-      const productoId = parseInt(favBtn.dataset.id);
-
-      modeloFavoritos.agregarAFavoritos(usuarioId, productoId, token);
-
-      favBtn.classList.replace("btn-outline-danger", "btn-danger");
-      favBtn.innerText = "❤️";
-      favBtn.disabled = true;
-    });
+    const productos = await modeloFavoritos.obtenerFavoritos(usuarioId, token);
+    vistaFavoritos.renderFavoritos(productos);
   }
 
-  return { configurarEventos };
+  return {
+    init: cargarFavoritos
+  };
 })();
 
-document.addEventListener("DOMContentLoaded", controladorFavoritos.configurarEventos);
+document.addEventListener("DOMContentLoaded", controladorFavoritos.init);

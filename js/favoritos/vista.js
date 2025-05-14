@@ -2,6 +2,11 @@ const vistaFavoritos = (() => {
   const contenedor = document.getElementById("contenedor-favoritos");
 
   function renderFavoritos(productos) {
+    if (!contenedor) {
+      console.error("❌ No se encontró el contenedor de favoritos");
+      return;
+    }
+
     contenedor.innerHTML = "";
 
     if (productos.length === 0) {
@@ -16,6 +21,7 @@ const vistaFavoritos = (() => {
       const tarjeta = document.createElement("div");
       tarjeta.className = "card h-100 shadow-sm position-relative";
 
+      // Promoción (IU-03)
       if (producto.promocion) {
         const promoBadge = document.createElement("span");
         promoBadge.className = "position-absolute top-0 start-100 translate-middle badge rounded-circle bg-danger";
@@ -24,6 +30,7 @@ const vistaFavoritos = (() => {
         tarjeta.appendChild(promoBadge);
       }
 
+      // Contenido HTML
       tarjeta.innerHTML += `
         <img src="assets/${producto.id}.jpg" class="card-img-top" alt="${producto.nombre}" />
         <div class="card-body d-flex flex-column">

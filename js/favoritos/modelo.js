@@ -1,9 +1,9 @@
 const modeloFavoritos = (() => {
-  const URL = "http://localhost:3000/api/favoritos";
+  const URL_BASE = "http://localhost:3000/api/favoritos";
 
   async function agregarAFavoritos(usuarioId, productoId, token) {
     try {
-      const response = await fetch(URL, {
+      const response = await fetch(URL_BASE, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -12,7 +12,10 @@ const modeloFavoritos = (() => {
         body: JSON.stringify({ usuarioId, productoId })
       });
 
-      if (!response.ok) throw new Error("No se pudo agregar a favoritos");
+      if (!response.ok) {
+        const errData = await response.json();
+        throw new Error(errData?.error || "No se pudo agregar a favoritos");
+      }
     } catch (error) {
       console.error("❌ Error al agregar favorito:", error);
     }
@@ -20,11 +23,18 @@ const modeloFavoritos = (() => {
 
   async function obtenerFavoritos(usuarioId, token) {
     try {
-      const response = await fetch(`${URL}?usuarioId=${usuarioId}`, {
-        headers: { Authorization: `Bearer ${token}` }
+      const response = await fetch(`${URL_BASE}/${usuarioId}`, {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
       });
 
-      if (!response.ok) throw new Error("No se pudieron obtener favoritos");
+      if (!response.ok) {
+        const errData = await response.json();
+        throw new Error(errData?.error || "No se pudieron obtener favoritos");
+      }
+
       return await response.json();
     } catch (error) {
       console.error("❌ Error al obtener favoritos:", error);

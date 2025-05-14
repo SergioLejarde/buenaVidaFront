@@ -3,13 +3,11 @@ const controladorVitrina = (() => {
   let totalPaginas = 3;
   const limite = 12;
 
-  // Elementos del DOM
   const buscador = document.getElementById("buscador");
   const btnBuscar = document.getElementById("btn-buscar");
   const paginacion = document.getElementById("paginacion");
   const contenedor = document.getElementById("contenedor-productos");
 
-  // NUEVO: inputs del filtro de precio
   const inputMin = document.getElementById("precio-min");
   const inputMax = document.getElementById("precio-max");
 
@@ -65,6 +63,7 @@ const controladorVitrina = (() => {
         return;
       }
 
+      // ❤️ Agregar a favoritos
       if (favBtn) {
         const productoId = parseInt(favBtn.dataset.id);
         try {
@@ -74,10 +73,12 @@ const controladorVitrina = (() => {
           favBtn.innerText = "❤️";
           favBtn.disabled = true;
         } catch (err) {
+          console.error("❌ Error al agregar a favoritos:", err);
           alert("No se pudo agregar a favoritos.");
         }
       }
 
+      // 🛒 Agregar al carrito
       if (cartBtn) {
         const productoId = parseInt(cartBtn.dataset.id);
         try {
@@ -87,6 +88,7 @@ const controladorVitrina = (() => {
           cartBtn.innerText = "✔️";
           cartBtn.disabled = true;
         } catch (err) {
+          console.error("❌ Error al agregar al carrito:", err);
           alert("No se pudo agregar al carrito.");
         }
       }
