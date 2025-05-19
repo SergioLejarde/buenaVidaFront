@@ -63,22 +63,14 @@
     <button class="btn btn-success w-100">Realizar pedido</button>
   </div>
 
-  <!-- Scripts -->
+  <!-- Scripts Bootstrap -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-  <!-- Módulos Vitrina -->
-  <script src="js/vitrina/modelo.js"></script>
-  <script src="js/vitrina/vista.js"></script>
-  <script src="js/vitrina/controlador.js"></script>
-
-  <!-- Módulos Modal -->
-  <script src="js/modal/modelo.js"></script>
-  <script src="js/modal/vista.js"></script>
-  <script src="js/modal/controlador.js"></script>
-
-  <!-- Módulos Carrito y Favoritos -->
-  <script src="js/carrito/modelo.js"></script>
-  <script src="js/favoritos/modelo.js"></script>
+  <!-- Scripts principales en orden de dependencia -->
+  <script type="module" src="build/favoritos/modelo.js"></script>
+  <script type="module" src="build/carrito/modelo.js"></script>
+  <script type="module" src="build/modal/controlador.js"></script>
+  <script type="module" src="build/vitrina/controlador.js"></script>
 
   <!-- IU-10: Script resumen flotante -->
   <script>
