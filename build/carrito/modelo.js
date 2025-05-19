@@ -7,7 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-export const modeloCarrito = (() => {
+const modeloCarrito = (() => {
     const URL_BASE = "http://localhost:3000/api/carrito";
     function obtenerToken() {
         return localStorage.getItem("token");
@@ -114,3 +114,4 @@ export const modeloCarrito = (() => {
         vaciarCarrito
     };
 })();
+export { modeloCarrito };

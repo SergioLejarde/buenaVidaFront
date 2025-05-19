@@ -1,23 +1,17 @@
-// Tipos que podrías mover a un archivo común si se usan en más lugares
-export interface Producto {
+interface Producto {
   id: number;
   nombre: string;
-  descripcion?: string;
   precio: number;
-  stock?: number;
-  categoria?: string;
-  imagenUrl?: string;
-  promocion?: boolean;
 }
 
-export interface ItemCarrito {
+interface ItemCarrito {
   productoId: number;
   cantidad: number;
   precio?: number;
   producto?: Producto;
 }
 
-export const vistaCarrito = (() => {
+const vistaCarrito = (() => {
   const contenedor = document.getElementById("contenedor-carrito") as HTMLElement;
   const totalSpan = document.getElementById("total-carrito") as HTMLElement;
 
@@ -32,7 +26,7 @@ export const vistaCarrito = (() => {
     }
 
     productos.forEach((item) => {
-      const producto: Producto = item.producto || {
+      const producto = item.producto || {
         id: item.productoId,
         nombre: `Producto ${item.productoId}`,
         precio: item.precio || 0
@@ -70,3 +64,4 @@ export const vistaCarrito = (() => {
     renderCarrito
   };
 })();
+export { vistaCarrito };

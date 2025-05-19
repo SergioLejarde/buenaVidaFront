@@ -1,10 +1,4 @@
-interface ProductoRequest {
-  usuarioId: number;
-  productoId?: number;
-  cantidad?: number;
-}
-
-export const modeloCarrito = (() => {
+const modeloCarrito = (() => {
   const URL_BASE = "http://localhost:3000/api/carrito";
 
   function obtenerToken(): string | null {
@@ -14,8 +8,8 @@ export const modeloCarrito = (() => {
   async function agregarAlCarrito(
     usuarioId: number,
     productoId: number,
-    cantidad: number = 1,
-    token: string | null = obtenerToken()
+    cantidad = 1,
+    token = obtenerToken()
   ): Promise<any> {
     try {
       const response = await fetch(`${URL_BASE}/agregar`, {
@@ -35,10 +29,7 @@ export const modeloCarrito = (() => {
     }
   }
 
-  async function obtenerCarrito(
-    usuarioId: number,
-    token: string | null = obtenerToken()
-  ): Promise<any> {
+  async function obtenerCarrito(usuarioId: number, token = obtenerToken()): Promise<any> {
     try {
       const response = await fetch(`${URL_BASE}?usuarioId=${usuarioId}`, {
         headers: { "Authorization": `Bearer ${token}` }
@@ -52,11 +43,7 @@ export const modeloCarrito = (() => {
     }
   }
 
-  async function eliminarProducto(
-    usuarioId: number,
-    productoId: number,
-    token: string | null = obtenerToken()
-  ): Promise<void> {
+  async function eliminarProducto(usuarioId: number, productoId: number, token = obtenerToken()): Promise<void> {
     try {
       const response = await fetch(`${URL_BASE}/eliminar`, {
         method: "DELETE",
@@ -73,12 +60,7 @@ export const modeloCarrito = (() => {
     }
   }
 
-  async function actualizarCantidad(
-    usuarioId: number,
-    productoId: number,
-    cantidad: number,
-    token: string | null = obtenerToken()
-  ): Promise<void> {
+  async function actualizarCantidad(usuarioId: number, productoId: number, cantidad: number, token = obtenerToken()): Promise<void> {
     try {
       const response = await fetch(`${URL_BASE}/actualizar`, {
         method: "PUT",
@@ -95,10 +77,7 @@ export const modeloCarrito = (() => {
     }
   }
 
-  async function vaciarCarrito(
-    usuarioId: number,
-    token: string | null = obtenerToken()
-  ): Promise<void> {
+  async function vaciarCarrito(usuarioId: number, token = obtenerToken()): Promise<void> {
     try {
       const response = await fetch(`${URL_BASE}/vaciar`, {
         method: "DELETE",
@@ -123,3 +102,4 @@ export const modeloCarrito = (() => {
     vaciarCarrito
   };
 })();
+export { modeloCarrito };

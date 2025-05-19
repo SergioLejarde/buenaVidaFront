@@ -1,4 +1,4 @@
-export const vistaCarrito = (() => {
+const vistaCarrito = (() => {
     const contenedor = document.getElementById("contenedor-carrito");
     const totalSpan = document.getElementById("total-carrito");
     function renderCarrito(productos) {
@@ -42,3 +42,4 @@ export const vistaCarrito = (() => {
         renderCarrito
     };
 })();
+export { vistaCarrito };

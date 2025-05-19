@@ -1,25 +1,13 @@
-import { vistaCarrito } from "./vista";
-import { modeloCarrito } from "./modelo";
+import { modeloCarrito } from "./modelo.js";
+import { vistaCarrito } from "./vista.js";
 
-interface ProductoCarrito {
-  productoId: number;
-  cantidad: number;
-  producto?: {
-    id: number;
-    nombre: string;
-    precio: number;
-    descripcion?: string;
-    [key: string]: any;
-  };
-}
-
-export const controladorCarrito = (() => {
+const controladorCarrito = (() => {
   const contenedor = document.getElementById("contenedor-carrito") as HTMLElement;
   const totalSpan = document.getElementById("total-carrito") as HTMLElement;
   const btnFinalizar = document.getElementById("btn-finalizar") as HTMLButtonElement;
 
   const usuarioId = parseInt(localStorage.getItem("usuarioId") || "0");
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("token") || "";
 
   async function cargarCarrito(): Promise<void> {
     if (!usuarioId || !token) {
@@ -28,25 +16,14 @@ export const controladorCarrito = (() => {
     }
 
     const respuesta = await modeloCarrito.obtenerCarrito(usuarioId, token);
-    const productos: ProductoCarrito[] = respuesta.productos || [];
-
-    const productosConDescripcion = productos.map(item => ({
-      ...item,
-      producto: item.producto
-        ? {
-            ...item.producto,
-            descripcion: item.producto.descripcion || ""
-          }
-        : undefined
-    }));
-
-    vistaCarrito.renderCarrito(productosConDescripcion);
+    const productos = respuesta.productos || [];
+    vistaCarrito.renderCarrito(productos);
   }
 
   function configurarEventos(): void {
     contenedor.addEventListener("click", async (e: Event) => {
       const target = e.target as HTMLElement;
-      const eliminarBtn = target.closest(".eliminar-carrito") as HTMLElement | null;
+      const eliminarBtn = target.closest(".eliminar-carrito") as HTMLButtonElement;
 
       if (eliminarBtn) {
         const productoId = parseInt(eliminarBtn.dataset.id || "0");
@@ -56,12 +33,11 @@ export const controladorCarrito = (() => {
     });
 
     contenedor.addEventListener("change", async (e: Event) => {
-      const target = e.target as HTMLInputElement;
-      const inputCantidad = target.closest(".cantidad-input") as HTMLInputElement | null;
-
-      if (inputCantidad) {
+      const inputCantidad = e.target as HTMLInputElement;
+      if (inputCantidad && inputCantidad.classList.contains("cantidad-input")) {
         const nuevaCantidad = parseInt(inputCantidad.value);
         const productoId = parseInt(inputCantidad.dataset.id || "0");
+
         if (nuevaCantidad > 0) {
           await modeloCarrito.actualizarCantidad(usuarioId, productoId, nuevaCantidad, token);
           await cargarCarrito();

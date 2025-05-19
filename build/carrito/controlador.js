@@ -7,14 +7,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { vistaCarrito } from "./vista";
-import { modeloCarrito } from "./modelo";
-export const controladorCarrito = (() => {
+import { modeloCarrito } from "./modelo.js";
+import { vistaCarrito } from "./vista.js";
+const controladorCarrito = (() => {
     const contenedor = document.getElementById("contenedor-carrito");
     const totalSpan = document.getElementById("total-carrito");
     const btnFinalizar = document.getElementById("btn-finalizar");
     const usuarioId = parseInt(localStorage.getItem("usuarioId") || "0");
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token") || "";
     function cargarCarrito() {
         return __awaiter(this, void 0, void 0, function* () {
             if (!usuarioId || !token) {
@@ -23,9 +23,7 @@ export const controladorCarrito = (() => {
             }
             const respuesta = yield modeloCarrito.obtenerCarrito(usuarioId, token);
             const productos = respuesta.productos || [];
-            const productosConDescripcion = productos.map(item => (Object.assign(Object.assign({}, item), { producto: item.producto
-                    ? Object.assign(Object.assign({}, item.producto), { descripcion: item.producto.descripcion || "" }) : undefined })));
-            vistaCarrito.renderCarrito(productosConDescripcion);
+            vistaCarrito.renderCarrito(productos);
         });
     }
     function configurarEventos() {
@@ -39,9 +37,8 @@ export const controladorCarrito = (() => {
             }
         }));
         contenedor.addEventListener("change", (e) => __awaiter(this, void 0, void 0, function* () {
-            const target = e.target;
-            const inputCantidad = target.closest(".cantidad-input");
-            if (inputCantidad) {
+            const inputCantidad = e.target;
+            if (inputCantidad && inputCantidad.classList.contains("cantidad-input")) {
                 const nuevaCantidad = parseInt(inputCantidad.value);
                 const productoId = parseInt(inputCantidad.dataset.id || "0");
                 if (nuevaCantidad > 0) {
