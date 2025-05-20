@@ -1,7 +1,8 @@
-"use strict";
 const vistaPedidos = (() => {
-    const contenedor = document.getElementById("lista-pedidos");
     function render(pedidos) {
+        const contenedor = document.getElementById("lista-pedidos");
+        if (!contenedor)
+            return;
         contenedor.innerHTML = "";
         if (pedidos.length === 0) {
             contenedor.innerHTML = "<div class='text-center text-muted'>Aún no tienes pedidos.</div>";
@@ -20,3 +21,4 @@ const vistaPedidos = (() => {
     }
     return { render };
 })();
+export { vistaPedidos };

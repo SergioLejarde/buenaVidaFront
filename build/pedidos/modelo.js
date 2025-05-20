@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -9,22 +8,27 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 const modeloPedidos = (() => {
-    const URL = "http://localhost:3000/api/pedidos";
     function obtenerPedidos(token) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const response = yield fetch(URL, {
-                    headers: { Authorization: `Bearer ${token}` }
+                const response = yield fetch("http://localhost:3000/api/pedidos", {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}` // ✅ Aquí estaba el problema
+                    }
                 });
+                if (response.status === 404)
+                    return []; // 🛡️ fallback defensivo
                 if (!response.ok)
-                    throw new Error("No se pudieron obtener pedidos");
+                    throw new Error("Error al obtener pedidos");
                 return yield response.json();
             }
             catch (error) {
-                console.error("❌ Error al obtener pedidos:", error);
-                return [];
+                console.error("❌ Error en fetch de pedidos:", error);
+                throw error;
             }
         });
     }
     return { obtenerPedidos };
 })();
+export { modeloPedidos };

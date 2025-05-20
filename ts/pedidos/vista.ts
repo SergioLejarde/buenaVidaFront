@@ -1,13 +1,8 @@
-type Pedido = {
-  id: number;
-  total: number;
-  fecha: string;
-};
-
 const vistaPedidos = (() => {
-  const contenedor = document.getElementById("lista-pedidos") as HTMLElement;
+  function render(pedidos: any[]): void {
+    const contenedor = document.getElementById("lista-pedidos");
+    if (!contenedor) return;
 
-  function render(pedidos: Pedido[]): void {
     contenedor.innerHTML = "";
 
     if (pedidos.length === 0) {
@@ -29,3 +24,5 @@ const vistaPedidos = (() => {
 
   return { render };
 })();
+
+export { vistaPedidos };

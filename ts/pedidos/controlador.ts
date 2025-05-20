@@ -1,3 +1,6 @@
+import { modeloPedidos } from "./modelo.js";
+import { vistaPedidos } from "./vista.js";
+
 const controladorPedidos = (() => {
   async function cargarPedidos(): Promise<void> {
     const token: string | null = localStorage.getItem("token");

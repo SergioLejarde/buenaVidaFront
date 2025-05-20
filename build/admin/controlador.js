@@ -7,29 +7,30 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { modeloPedidos } from "./modelo.js";
-import { vistaPedidos } from "./vista.js";
-const controladorPedidos = (() => {
-    function cargarPedidos() {
+import { modeloAdmin } from "./modelo.js";
+import { vistaAdmin } from "./vista.js";
+const controladorAdmin = (() => {
+    function cargarPanel() {
         return __awaiter(this, void 0, void 0, function* () {
             const token = localStorage.getItem("token");
-            if (!token) {
-                alert("Debes iniciar sesión para ver tus pedidos.");
-                window.location.href = "login.html";
+            const rol = localStorage.getItem("rol");
+            if (!token || rol !== "admin") {
+                alert("Acceso denegado. No eres administrador.");
+                window.location.href = "index.html";
                 return;
             }
             try {
-                const pedidos = yield modeloPedidos.obtenerPedidos(token);
-                vistaPedidos.render(pedidos);
+                console.log("🔐 TOKEN:", token);
+                const usuarios = yield modeloAdmin.obtenerUsuarios(token);
+                console.log("👥 Usuarios recibidos:", usuarios);
+                vistaAdmin.renderUsuarios(usuarios);
             }
-            catch (error) {
-                console.error("❌ Error cargando pedidos:", error);
-                alert("Error al cargar pedidos.");
+            catch (err) {
+                console.error("❌ Error cargando usuarios:", err);
+                alert("No se pudieron cargar los usuarios.");
             }
         });
     }
-    return {
-        cargarPedidos
-    };
+    return { cargarPanel };
 })();
-document.addEventListener("DOMContentLoaded", controladorPedidos.cargarPedidos);
+document.addEventListener("DOMContentLoaded", controladorAdmin.cargarPanel);

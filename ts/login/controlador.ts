@@ -1,6 +1,7 @@
 interface LoginResponse {
   usuarioId: string;
   token: string;
+  rol: string;
 }
 
 const loginControlador = (() => {
@@ -21,14 +22,20 @@ const loginControlador = (() => {
 
         localStorage.setItem("usuarioId", datos.usuarioId);
         localStorage.setItem("token", datos.token);
+        localStorage.setItem("rol", datos.rol);
 
         loginVista.mostrarExito("Inicio de sesión exitoso");
 
         setTimeout(() => {
-          window.location.href = "index.html";
+          if (datos.rol === "admin") {
+            window.location.href = "admin.html";
+          } else {
+            window.location.href = "index.html";
+          }
         }, 1500);
+
       } catch (error: any) {
-        loginVista.mostrarError(error.message);
+        loginVista.mostrarError(error.message || "Error al iniciar sesión.");
       }
     });
   }
@@ -37,9 +44,7 @@ const loginControlador = (() => {
     configurarEventos();
   }
 
-  return {
-    init
-  };
+  return { init };
 })();
 
 document.addEventListener("DOMContentLoaded", loginControlador.init);

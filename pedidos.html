@@ -12,51 +12,7 @@
     <div id="lista-pedidos" class="list-group"></div>
   </div>
 
-  <script>
-    const token = localStorage.getItem("token");
-
-    if (!token) {
-      alert("Debes iniciar sesión para ver tus pedidos.");
-      window.location.href = "login.html";
-    }
-
-    fetch("http://localhost:3000/api/pedidos", {
-      headers: {
-        Authorization: "Bearer " + token
-      }
-    })
-    .then(res => {
-      if (!res.ok) throw new Error("Error al cargar pedidos");
-      return res.json();
-    })
-    .then(pedidos => {
-      const contenedor = document.getElementById("lista-pedidos");
-      if (pedidos.length === 0) {
-        contenedor.innerHTML = "<div class='text-center text-muted'>Aún no tienes pedidos.</div>";
-        return;
-      }
-
-      pedidos.forEach(pedido => {
-        const div = document.createElement("div");
-        div.className = "list-group-item";
-        div.innerHTML = `
-          <h5 class="mb-1">Pedido #${pedido.id}</h5>
-          <p class="mb-1">Total: $${pedido.total}</p>
-          <small>Fecha: ${new Date(pedido.fecha).toLocaleDateString()}</small>
-        `;
-        contenedor.appendChild(div);
-      });
-    })
-    .catch(() => {
-      alert("Error al obtener pedidos");
-    });
-  </script>
-  <!-- quitar el <script> largo que hace fetch manual -->
-
-  <script src="build/pedidos/modelo.js"></script>
-  <script src="build/pedidos/vista.js"></script>
-  <script src="build/pedidos/controlador.js"></script>
-
-
+  <!-- Scripts TypeScript compilados -->
+  <script type="module" src="build/pedidos/controlador.js"></script>
 </body>
 </html>
