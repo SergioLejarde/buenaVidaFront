@@ -14,11 +14,11 @@ const modeloPedidos = (() => {
                 const response = yield fetch("http://localhost:3000/api/pedidos", {
                     headers: {
                         "Content-Type": "application/json",
-                        "Authorization": `Bearer ${token}` // ✅ Aquí estaba el problema
+                        "Authorization": `Bearer ${token}` //  Aquí estaba el problema
                     }
                 });
                 if (response.status === 404)
-                    return []; // 🛡️ fallback defensivo
+                    return []; //  fallback defensivo
                 if (!response.ok)
                     throw new Error("Error al obtener pedidos");
                 return yield response.json();
