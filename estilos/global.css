@@ -1,4 +1,4 @@
-/* Paleta oficial del parcial */
+/* 🎨 Paleta oficial del parcial */
 :root {
   --verde-oscuro: #006414;
   --verde-medio: #009929;
@@ -15,7 +15,7 @@
   --gris-suave: #f5f5f5;
 }
 
-/* Reseteo básico */
+/* 🔄 Reset básico */
 body {
   font-family: "Segoe UI", sans-serif;
   background-color: var(--gris-suave);
@@ -23,12 +23,12 @@ body {
   padding: 0;
 }
 
-/* Logo centrado y responsive */
+/* 🖼️ Logo centrado en móviles */
 header img {
   max-height: 100px;
 }
 
-/* Botones globales */
+/* 🧮 Botones generales */
 button {
   transition: all 0.2s ease-in-out;
 }
@@ -37,7 +37,7 @@ button:hover {
   filter: brightness(1.1);
 }
 
-/* Botones específicos */
+/* ✅ Estilo de botones principales */
 .btn-success {
   background-color: var(--verde-medio);
   color: var(--texto-claro);
@@ -60,7 +60,7 @@ button:hover {
   color: var(--texto-oscuro);
 }
 
-/* Botones de acción en productos */
+/* 💚 Botones favoritos y carrito */
 [data-fav],
 [data-carrito] {
   font-size: 1.2rem;
@@ -68,19 +68,31 @@ button:hover {
   padding: 6px 10px;
 }
 
-/* Tarjetas de producto */
+/* 📦 Tarjetas de producto */
 .card:hover {
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
   transform: scale(1.01);
 }
 
-/* Etiqueta de promoción */
-.badge.bg-danger {
-  background-color: var(--rojo-claro) !important;
-  font-size: 0.8rem;
+/* 🔥 Etiqueta de promoción clara y visible (IU-03 mejorado) */
+.badge-promocion {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background-color: var(--rojo-fuerte);
+  color: white;
+  font-weight: bold;
+  font-size: 0.75rem;
+  border-radius: 50%;
+  padding: 12px 10px;
+  line-height: 1;
+  z-index: 10;
+  box-shadow: 0 0 4px rgba(0,0,0,0.3);
+  text-align: center;
+  white-space: pre-line;
 }
 
-/* Paginación */
+/* 🔢 Paginación */
 .page-item.active .page-link {
   background-color: var(--verde-medio);
   border-color: var(--verde-medio);
@@ -91,12 +103,12 @@ button:hover {
   color: var(--verde-oscuro);
 }
 
-/* Buscador */
+/* 🔍 Estilo del buscador */
 #buscador {
   border: 2px solid var(--verde-claro);
 }
 
-/* Modal */
+/* 🧾 Modal */
 .modal-header {
   background-color: var(--verde-oscuro);
   color: var(--texto-claro);
@@ -106,7 +118,28 @@ button:hover {
   background-color: var(--verde-claro);
 }
 
-/* Responsive */
+/* 🧩 Estilo para sección de filtros (IU-06) */
+aside h5 {
+  font-weight: bold;
+  color: var(--verde-oscuro);
+}
+
+aside .form-label {
+  font-weight: 500;
+  margin-bottom: 4px;
+  color: var(--verde-oscuro);
+}
+
+aside .form-control {
+  border: 2px solid var(--verde-claro);
+  border-radius: 6px;
+}
+
+aside button {
+  margin-top: 10px;
+}
+
+/* 📱 Responsive logo en móvil */
 @media screen and (max-width: 400px) {
   header img {
     display: block;

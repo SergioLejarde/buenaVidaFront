@@ -11,34 +11,51 @@ const vistaVitrina = (() => {
             const col = document.createElement("div");
             col.className = "col-md-3";
             const tarjeta = document.createElement("div");
-            tarjeta.className = "card h-100 shadow-sm position-relative";
+            tarjeta.className = "card h-100 shadow-sm position-relative border-0 overflow-hidden";
             tarjeta.dataset.id = producto.id.toString();
             tarjeta.style.cursor = "pointer";
+            // IU-05: Botones ocultos hasta hover
+            const botones = document.createElement("div");
+            botones.className = "d-flex justify-content-between px-3 pb-3 gap-2 invisible";
+            // IU-04 Relieve con hover
             tarjeta.addEventListener("mouseenter", () => {
-                tarjeta.classList.add("shadow", "border-primary");
+                tarjeta.classList.add("shadow-lg");
+                botones.classList.remove("invisible");
             });
             tarjeta.addEventListener("mouseleave", () => {
-                tarjeta.classList.remove("shadow", "border-primary");
+                tarjeta.classList.remove("shadow-lg");
+                botones.classList.add("invisible");
             });
+            // IU-03 Promoción
             if (producto.promocion) {
-                const promoBadge = document.createElement("span");
-                promoBadge.className = "position-absolute top-0 start-100 translate-middle badge rounded-circle bg-danger";
-                promoBadge.style.zIndex = "1";
-                promoBadge.innerText = "🔥";
+                const promoBadge = document.createElement("div");
+                promoBadge.className = "badge-promocion";
+                promoBadge.innerText = "-50%\n2ªund.";
                 tarjeta.appendChild(promoBadge);
             }
+            // Imagen y contenido
             tarjeta.innerHTML += `
         <img src="assets/${producto.id}.jpg" class="card-img-top" alt="${producto.nombre}" />
         <div class="card-body d-flex flex-column">
           <h5 class="card-title">${producto.nombre}</h5>
           <p class="card-text small">${producto.descripcion.slice(0, 100)}...</p>
-          <p class="fw-bold mb-1">$${producto.precio}</p>
-          <div class="d-flex justify-content-between mt-auto">
-            <button class="btn btn-outline-danger" data-id="${producto.id}" data-fav>♥</button>
-            <button class="btn btn-outline-success" data-id="${producto.id}" data-carrito>🛒</button>
-          </div>
+          <p class="fw-bold mb-2">$${producto.precio}</p>
         </div>
       `;
+            // Botones de acción
+            const btnFav = document.createElement("button");
+            btnFav.className = "btn btn-outline-danger flex-fill";
+            btnFav.innerHTML = "♥";
+            btnFav.setAttribute("data-id", producto.id.toString());
+            btnFav.setAttribute("data-fav", "");
+            const btnCarrito = document.createElement("button");
+            btnCarrito.className = "btn btn-outline-success flex-fill";
+            btnCarrito.innerHTML = "🛒";
+            btnCarrito.setAttribute("data-id", producto.id.toString());
+            btnCarrito.setAttribute("data-carrito", "");
+            botones.appendChild(btnFav);
+            botones.appendChild(btnCarrito);
+            tarjeta.appendChild(botones);
             col.appendChild(tarjeta);
             contenedor.appendChild(col);
         });

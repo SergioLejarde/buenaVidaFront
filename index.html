@@ -8,7 +8,6 @@
   <link rel="stylesheet" href="/estilos/global.css"/>
 </head>
 <body>
-  <!-- IU-09: Barra de navegación superior -->
   <nav class="navbar navbar-expand-lg navbar-light bg-light px-3">
     <a class="navbar-brand" href="#">
       <img src="assets/logo.jpg" alt="Buena Vida" style="height: 50px;">
@@ -23,33 +22,29 @@
     </div>
   </nav>
 
-  <!-- Zona principal -->
-  <main class="container my-4">
-    <!-- Buscador y filtros -->
-    <div class="row mb-4 g-2">
-      <div class="col-md-4">
-        <input type="text" id="buscador" class="form-control" placeholder="Buscar productos..." />
-      </div>
-      <div class="col-md-3">
-        <input type="number" id="precio-min" class="form-control" placeholder="Precio mínimo">
-      </div>
-      <div class="col-md-3">
-        <input type="number" id="precio-max" class="form-control" placeholder="Precio máximo">
-      </div>
-      <div class="col-md-2">
-        <button class="btn btn-primary w-100" id="btn-buscar">Buscar</button>
-      </div>
-    </div>
+  <main class="container-fluid my-4">
+    <div class="row">
+      <aside class="col-md-3 mb-4 px-4">
+        <h5 class="mb-3">🔍 Filtros</h5>
+        <div class="mb-3">
+          <input type="text" id="buscador" class="form-control" placeholder="Buscar productos..."/>
+        </div>
+        <div class="mb-3">
+          <label for="precio-min" class="form-label">Precio mínimo</label>
+          <input type="number" id="precio-min" class="form-control" placeholder="0"/>
+        </div>
+        <div class="mb-3">
+          <label for="precio-max" class="form-label">Precio máximo</label>
+          <input type="number" id="precio-max" class="form-control" placeholder="1000"/>
+        </div>
+        <button class="btn btn-success w-100" id="btn-buscar">Aplicar filtros</button>
+      </aside>
 
-    <!-- Zona de productos -->
-    <div id="contenedor-productos" class="row g-4">
-      <!-- JS renderiza aquí -->
+      <section class="col-md-9">
+        <div id="contenedor-productos" class="row g-4"></div>
+        <nav class="mt-4" id="paginacion"></nav>
+      </section>
     </div>
-
-    <!-- Paginación -->
-    <nav class="mt-4" id="paginacion">
-      <!-- renderPaginacion() inyecta el <ul class="pagination"> -->
-    </nav>
   </main>
 
   <!-- IU-10: Resumen flotante de carrito -->
@@ -63,27 +58,54 @@
     <button class="btn btn-success w-100">Realizar pedido</button>
   </div>
 
-  <!-- Scripts Bootstrap -->
+  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-  <!-- Scripts principales en orden de dependencia -->
   <script type="module" src="build/favoritos/modelo.js"></script>
   <script type="module" src="build/carrito/modelo.js"></script>
   <script type="module" src="build/modal/controlador.js"></script>
   <script type="module" src="build/vitrina/controlador.js"></script>
 
-  <!-- IU-10: Script resumen flotante -->
+  <!-- IU-10: Script resumen flotante con cantidades -->
   <script>
     const resumenCarrito = document.getElementById("resumen-carrito");
     const btnCarrito = document.getElementById("btn-carrito");
+    const carritoItems = document.getElementById("carrito-items");
+    const contador = document.getElementById("contador-carrito");
+
+    function actualizarResumenCarrito() {
+      const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+
+      contador.textContent = carrito.length;
+
+      if (carrito.length === 0) {
+        carritoItems.innerHTML = `<p class="text-muted small">Tu carrito está vacío.</p>`;
+        return;
+      }
+
+      carritoItems.innerHTML = "";
+      carrito.forEach(producto => {
+        const cantidad = producto.cantidad ?? 1;
+        const total = (producto.precio * cantidad).toFixed(2);
+
+        const div = document.createElement("div");
+        div.className = "d-flex justify-content-between align-items-center mb-2";
+        div.innerHTML = `
+          <div class="flex-grow-1 pe-2">
+            <div class="fw-semibold text-truncate" title="${producto.nombre}">${producto.nombre}</div>
+            <small class="text-muted">Cantidad: ${cantidad}</small>
+          </div>
+          <span class="fw-bold">$${total}</span>
+        `;
+        carritoItems.appendChild(div);
+      });
+    }
 
     btnCarrito.addEventListener("click", () => {
       resumenCarrito.classList.toggle("d-none");
+      actualizarResumenCarrito();
     });
 
-    const contador = document.getElementById("contador-carrito");
-    const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
-    contador.textContent = carrito.length;
+    actualizarResumenCarrito();
   </script>
 </body>
 </html>
