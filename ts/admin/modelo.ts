@@ -9,7 +9,7 @@ const modeloAdmin = (() => {
   }
 
   async function obtenerPedidos(token: string): Promise<any[]> {
-    const res = await fetch("http://localhost:3000/api/pedidos", {
+    const res = await fetch("http://localhost:3000/api/admin/pedidos", {
       headers: { Authorization: `Bearer ${token}` }
     });
 

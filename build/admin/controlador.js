@@ -21,13 +21,18 @@ const controladorAdmin = (() => {
             }
             try {
                 console.log("🔐 TOKEN:", token);
+                // Usuarios
                 const usuarios = yield modeloAdmin.obtenerUsuarios(token);
                 console.log("👥 Usuarios recibidos:", usuarios);
                 vistaAdmin.renderUsuarios(usuarios);
+                // Pedidos
+                const pedidos = yield modeloAdmin.obtenerPedidos(token);
+                console.log("📦 Pedidos recibidos:", pedidos);
+                vistaAdmin.renderPedidos(pedidos);
             }
             catch (err) {
-                console.error("❌ Error cargando usuarios:", err);
-                alert("No se pudieron cargar los usuarios.");
+                console.error("❌ Error cargando panel:", err);
+                alert("No se pudo cargar la información del panel.");
             }
         });
     }

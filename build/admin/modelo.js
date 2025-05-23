@@ -20,7 +20,7 @@ const modeloAdmin = (() => {
     }
     function obtenerPedidos(token) {
         return __awaiter(this, void 0, void 0, function* () {
-            const res = yield fetch("http://localhost:3000/api/pedidos", {
+            const res = yield fetch("http://localhost:3000/api/admin/pedidos", {
                 headers: { Authorization: `Bearer ${token}` }
             });
             if (!res.ok)

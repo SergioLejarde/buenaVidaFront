@@ -28,7 +28,7 @@ const vistaFavoritos = (() => {
           <h5 class="card-title">${producto.nombre}</h5>
           <p class="card-text small">${producto.descripcion.slice(0, 100)}...</p>
           <p class="fw-bold mb-1">$${producto.precio}</p>
-          <button class="btn btn-outline-success mt-auto" data-id="${producto.id}" data-carrito>🛒 Agregar</button>
+          <button class="btn btn-outline-success mt-auto" data-id="${producto.id}" data-carrito>🛒 Agregar a la cesta</button>
         </div>
       `;
             col.appendChild(tarjeta);
