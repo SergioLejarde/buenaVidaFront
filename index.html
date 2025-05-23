@@ -1,58 +1,71 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+  <!-- Metadatos para compatibilidad y responsividad -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Buena Vida - Vitrina</title>
+
+  <!-- Estilos externos: Bootstrap y globales personalizados -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
   <link rel="stylesheet" href="/estilos/global.css"/>
 </head>
 <body>
-  <!-- IU-09: Barra de navegación superior -->
+
+  <!-- IU-09: Barra de navegación superior con logo e íconos de usuario -->
   <nav class="navbar navbar-expand-lg navbar-light bg-light px-3">
     <a class="navbar-brand" href="#">
+      <!-- Logo de la tienda -->
       <img src="assets/logo.jpg" alt="Buena Vida" style="height: 50px;">
     </a>
+    <!-- Íconos flotantes alineados a la derecha -->
     <div class="ms-auto d-flex align-items-center gap-3">
       <a href="favoritos.html" class="btn btn-outline-danger" title="Favoritos">❤️</a>
       <a href="cuenta.html" class="btn btn-outline-secondary" title="Mi Cuenta">👤</a>
       <button id="btn-carrito" class="btn btn-outline-success position-relative" title="Mi carrito">
         🛒
+        <!-- Contador dinámico de productos en el carrito -->
         <span id="contador-carrito" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
       </button>
     </div>
   </nav>
 
-  <!-- Zona principal -->
+  <!-- Zona principal del sitio -->
   <main class="container-fluid my-4">
     <div class="row">
-      <!-- IU-06: Filtros laterales -->
-<aside class="col-md-3 mb-4 px-4">
-  <h5 class="mb-3">🔍 Filtros</h5>
-  <div class="mb-3">
-    <input type="text" id="buscador" class="form-control" placeholder="Buscar productos..."/>
-  </div>
 
-  <!-- Slider visual sin interferencia -->
-  <div class="mb-3">
-    <label for="slider-precio" class="form-label">Vista previa del rango máximo</label>
-    <input type="range" id="slider-precio" class="form-range" min="1" max="1000" value="1000" disabled>
-  </div>
+      <!-- IU-06: Filtros laterales para búsqueda y precio -->
+      <aside class="col-md-3 mb-4 px-4">
+        <h5 class="mb-3">🔍 Filtros</h5>
 
-  <!-- Estos inputs no se modifican -->
-  <div class="mb-3">
-    <label for="precio-min" class="form-label">Precio mínimo</label>
-    <input type="number" id="precio-min" class="form-control" placeholder="0" />
-  </div>
-  <div class="mb-3">
-    <label for="precio-max" class="form-label">Precio máximo</label>
-    <input type="number" id="precio-max" class="form-control" placeholder="1000" />
-  </div>
+        <!-- Buscador por texto -->
+        <div class="mb-3">
+          <input type="text" id="buscador" class="form-control" placeholder="Buscar productos..."/>
+        </div>
 
-  <button class="btn btn-success w-100" id="btn-buscar">Aplicar filtros</button>
-</aside>
+        <!-- Slider visual solo decorativo (no funcional) -->
+        <div class="mb-3">
+          <label for="slider-precio" class="form-label">Vista previa del rango máximo</label>
+          <input type="range" id="slider-precio" class="form-range" min="1" max="1000" value="1000" disabled>
+        </div>
 
-      <!-- Productos -->
+        <!-- Filtro por precio mínimo -->
+        <div class="mb-3">
+          <label for="precio-min" class="form-label">Precio mínimo</label>
+          <input type="number" id="precio-min" class="form-control" placeholder="0" />
+        </div>
+
+        <!-- Filtro por precio máximo -->
+        <div class="mb-3">
+          <label for="precio-max" class="form-label">Precio máximo</label>
+          <input type="number" id="precio-max" class="form-control" placeholder="1000" />
+        </div>
+
+        <!-- Botón de acción para aplicar los filtros -->
+        <button class="btn btn-success w-100" id="btn-buscar">Aplicar filtros</button>
+      </aside>
+
+      <!-- IU-01, IU-02: Sección de productos y paginación -->
       <section class="col-md-9">
         <div id="contenedor-productos" class="row g-4"></div>
         <nav class="mt-4" id="paginacion"></nav>
@@ -60,8 +73,9 @@
     </div>
   </main>
 
-  <!-- IU-10: Resumen flotante de carrito -->
-  <div id="resumen-carrito" class="position-fixed bottom-0 end-0 bg-white border p-3 shadow d-none" style="max-width: 320px; z-index: 1050;">
+  <!-- IU-10: Resumen flotante del carrito -->
+  <div id="resumen-carrito" class="position-fixed bottom-0 end-0 bg-white border p-3 shadow d-none"
+       style="max-width: 320px; z-index: 1050;">
     <h5>🛒 Tu carrito</h5>
     <div id="carrito-items" class="mb-2">
       <p class="text-muted small">Tu carrito está vacío.</p>
@@ -71,18 +85,21 @@
       <strong>Total:</strong>
       <span id="resumen-total" class="fw-bold">$0</span>
     </div>
+    <!-- Acceso a la página carrito -->
     <button onclick="window.location.href='carrito.html'" class="btn btn-primary w-100 mb-2">Ir al carrito</button>
     <button class="btn btn-success w-100">Realizar pedido</button>
   </div>
 
-  <!-- Scripts -->
+  <!-- Scripts esenciales -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Módulos de lógica frontend -->
   <script type="module" src="build/favoritos/modelo.js"></script>
   <script type="module" src="build/carrito/modelo.js"></script>
   <script type="module" src="build/modal/controlador.js"></script>
   <script type="module" src="build/vitrina/controlador.js"></script>
 
-  <!-- 🛒 Script del resumen flotante del carrito -->
+  <!-- Script de actualización del resumen flotante del carrito -->
   <script>
     const resumenCarrito = document.getElementById("resumen-carrito");
     const btnCarrito = document.getElementById("btn-carrito");
@@ -90,6 +107,7 @@
     const resumenTotal = document.getElementById("resumen-total");
     const contador = document.getElementById("contador-carrito");
 
+    // Recupera datos del carrito por usuario desde sessionStorage
     function obtenerCarritoDesdeSession() {
       const usuarioId = localStorage.getItem("usuarioId");
       if (!usuarioId) return [];
@@ -97,6 +115,7 @@
       return data ? JSON.parse(data) : [];
     }
 
+    // Actualiza el resumen flotante: productos, total y contador
     function actualizarResumenCarrito() {
       const carrito = obtenerCarritoDesdeSession();
       let total = 0;
@@ -116,6 +135,7 @@
         total += subtotal;
         cantidadTotal += cantidad;
 
+        // Render de producto individual en resumen
         const item = document.createElement("div");
         item.className = "d-flex justify-content-between align-items-center mb-2";
         item.innerHTML = `
@@ -132,11 +152,13 @@
       contador.textContent = cantidadTotal;
     }
 
+    // Muestra/oculta el resumen flotante al hacer clic
     btnCarrito.addEventListener("click", () => {
       resumenCarrito.classList.toggle("d-none");
       actualizarResumenCarrito();
     });
 
+    // Inicializa el resumen al cargar la página
     document.addEventListener("DOMContentLoaded", actualizarResumenCarrito);
   </script>
 </body>
