@@ -15,16 +15,13 @@
   <!-- IU-09: Barra de navegación superior con logo e íconos de usuario -->
   <nav class="navbar navbar-expand-lg navbar-light bg-light px-3">
     <a class="navbar-brand" href="#">
-      <!-- Logo de la tienda -->
       <img src="assets/logo.jpg" alt="Buena Vida" style="height: 50px;">
     </a>
-    <!-- Íconos flotantes alineados a la derecha -->
     <div class="ms-auto d-flex align-items-center gap-3">
       <a href="favoritos.html" class="btn btn-outline-danger" title="Favoritos">❤️</a>
       <a href="cuenta.html" class="btn btn-outline-secondary" title="Mi Cuenta">👤</a>
       <button id="btn-carrito" class="btn btn-outline-success position-relative" title="Mi carrito">
         🛒
-        <!-- Contador dinámico de productos en el carrito -->
         <span id="contador-carrito" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
       </button>
     </div>
@@ -38,30 +35,26 @@
       <aside class="col-md-3 mb-4 px-4">
         <h5 class="mb-3">🔍 Filtros</h5>
 
-        <!-- Buscador por texto -->
         <div class="mb-3">
           <input type="text" id="buscador" class="form-control" placeholder="Buscar productos..."/>
         </div>
 
-        <!-- Slider visual solo decorativo (no funcional) -->
+        <!-- Slider sincronizado con precio-max -->
         <div class="mb-3">
           <label for="slider-precio" class="form-label">Vista previa del rango máximo</label>
-          <input type="range" id="slider-precio" class="form-range" min="1" max="1000" value="1000" disabled>
+          <input type="range" id="slider-precio" class="form-range" min="1" max="1000" value="1000">
         </div>
 
-        <!-- Filtro por precio mínimo -->
         <div class="mb-3">
           <label for="precio-min" class="form-label">Precio mínimo</label>
           <input type="number" id="precio-min" class="form-control" placeholder="0" />
         </div>
 
-        <!-- Filtro por precio máximo -->
         <div class="mb-3">
           <label for="precio-max" class="form-label">Precio máximo</label>
           <input type="number" id="precio-max" class="form-control" placeholder="1000" />
         </div>
 
-        <!-- Botón de acción para aplicar los filtros -->
         <button class="btn btn-success w-100" id="btn-buscar">Aplicar filtros</button>
       </aside>
 
@@ -85,7 +78,6 @@
       <strong>Total:</strong>
       <span id="resumen-total" class="fw-bold">$0</span>
     </div>
-    <!-- Acceso a la página carrito -->
     <button onclick="window.location.href='carrito.html'" class="btn btn-primary w-100 mb-2">Ir al carrito</button>
     <button class="btn btn-success w-100">Realizar pedido</button>
   </div>
@@ -107,7 +99,6 @@
     const resumenTotal = document.getElementById("resumen-total");
     const contador = document.getElementById("contador-carrito");
 
-    // Recupera datos del carrito por usuario desde sessionStorage
     function obtenerCarritoDesdeSession() {
       const usuarioId = localStorage.getItem("usuarioId");
       if (!usuarioId) return [];
@@ -115,7 +106,6 @@
       return data ? JSON.parse(data) : [];
     }
 
-    // Actualiza el resumen flotante: productos, total y contador
     function actualizarResumenCarrito() {
       const carrito = obtenerCarritoDesdeSession();
       let total = 0;
@@ -135,7 +125,6 @@
         total += subtotal;
         cantidadTotal += cantidad;
 
-        // Render de producto individual en resumen
         const item = document.createElement("div");
         item.className = "d-flex justify-content-between align-items-center mb-2";
         item.innerHTML = `
@@ -152,14 +141,30 @@
       contador.textContent = cantidadTotal;
     }
 
-    // Muestra/oculta el resumen flotante al hacer clic
     btnCarrito.addEventListener("click", () => {
       resumenCarrito.classList.toggle("d-none");
       actualizarResumenCarrito();
     });
 
-    // Inicializa el resumen al cargar la página
     document.addEventListener("DOMContentLoaded", actualizarResumenCarrito);
+  </script>
+
+  <!-- Script para sincronizar el slider con el input precio-max -->
+  <script>
+    const slider = document.getElementById("slider-precio");
+    const inputMax = document.getElementById("precio-max");
+
+    if (slider && inputMax) {
+      slider.addEventListener("input", () => {
+        inputMax.value = slider.value;
+      });
+
+      inputMax.addEventListener("input", () => {
+        if (!isNaN(parseFloat(inputMax.value))) {
+          slider.value = inputMax.value;
+        }
+      });
+    }
   </script>
 </body>
 </html>
