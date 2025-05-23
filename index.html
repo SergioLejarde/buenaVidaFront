@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="/estilos/global.css"/>
 </head>
 <body>
+  <!-- IU-09: Barra de navegación superior -->
   <nav class="navbar navbar-expand-lg navbar-light bg-light px-3">
     <a class="navbar-brand" href="#">
       <img src="assets/logo.jpg" alt="Buena Vida" style="height: 50px;">
@@ -22,24 +23,36 @@
     </div>
   </nav>
 
+  <!-- Zona principal -->
   <main class="container-fluid my-4">
     <div class="row">
-      <aside class="col-md-3 mb-4 px-4">
-        <h5 class="mb-3">🔍 Filtros</h5>
-        <div class="mb-3">
-          <input type="text" id="buscador" class="form-control" placeholder="Buscar productos..."/>
-        </div>
-        <div class="mb-3">
-          <label for="precio-min" class="form-label">Precio mínimo</label>
-          <input type="number" id="precio-min" class="form-control" placeholder="0"/>
-        </div>
-        <div class="mb-3">
-          <label for="precio-max" class="form-label">Precio máximo</label>
-          <input type="number" id="precio-max" class="form-control" placeholder="1000"/>
-        </div>
-        <button class="btn btn-success w-100" id="btn-buscar">Aplicar filtros</button>
-      </aside>
+      <!-- IU-06: Filtros laterales -->
+<aside class="col-md-3 mb-4 px-4">
+  <h5 class="mb-3">🔍 Filtros</h5>
+  <div class="mb-3">
+    <input type="text" id="buscador" class="form-control" placeholder="Buscar productos..."/>
+  </div>
 
+  <!-- Slider visual sin interferencia -->
+  <div class="mb-3">
+    <label for="slider-precio" class="form-label">Vista previa del rango máximo</label>
+    <input type="range" id="slider-precio" class="form-range" min="1" max="1000" value="1000" disabled>
+  </div>
+
+  <!-- Estos inputs no se modifican -->
+  <div class="mb-3">
+    <label for="precio-min" class="form-label">Precio mínimo</label>
+    <input type="number" id="precio-min" class="form-control" placeholder="0" />
+  </div>
+  <div class="mb-3">
+    <label for="precio-max" class="form-label">Precio máximo</label>
+    <input type="number" id="precio-max" class="form-control" placeholder="1000" />
+  </div>
+
+  <button class="btn btn-success w-100" id="btn-buscar">Aplicar filtros</button>
+</aside>
+
+      <!-- Productos -->
       <section class="col-md-9">
         <div id="contenedor-productos" class="row g-4"></div>
         <nav class="mt-4" id="paginacion"></nav>
@@ -54,6 +67,10 @@
       <p class="text-muted small">Tu carrito está vacío.</p>
     </div>
     <hr>
+    <div class="d-flex justify-content-between mb-2">
+      <strong>Total:</strong>
+      <span id="resumen-total" class="fw-bold">$0</span>
+    </div>
     <button onclick="window.location.href='carrito.html'" class="btn btn-primary w-100 mb-2">Ir al carrito</button>
     <button class="btn btn-success w-100">Realizar pedido</button>
   </div>
@@ -65,39 +82,54 @@
   <script type="module" src="build/modal/controlador.js"></script>
   <script type="module" src="build/vitrina/controlador.js"></script>
 
-  <!-- IU-10: Script resumen flotante con cantidades -->
+  <!-- 🛒 Script del resumen flotante del carrito -->
   <script>
     const resumenCarrito = document.getElementById("resumen-carrito");
     const btnCarrito = document.getElementById("btn-carrito");
     const carritoItems = document.getElementById("carrito-items");
+    const resumenTotal = document.getElementById("resumen-total");
     const contador = document.getElementById("contador-carrito");
 
-    function actualizarResumenCarrito() {
-      const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+    function obtenerCarritoDesdeSession() {
+      const usuarioId = localStorage.getItem("usuarioId");
+      if (!usuarioId) return [];
+      const data = sessionStorage.getItem(`carrito-${usuarioId}`);
+      return data ? JSON.parse(data) : [];
+    }
 
-      contador.textContent = carrito.length;
+    function actualizarResumenCarrito() {
+      const carrito = obtenerCarritoDesdeSession();
+      let total = 0;
+      let cantidadTotal = 0;
 
       if (carrito.length === 0) {
         carritoItems.innerHTML = `<p class="text-muted small">Tu carrito está vacío.</p>`;
+        resumenTotal.textContent = "$0";
+        contador.textContent = "0";
         return;
       }
 
       carritoItems.innerHTML = "";
       carrito.forEach(producto => {
         const cantidad = producto.cantidad ?? 1;
-        const total = (producto.precio * cantidad).toFixed(2);
+        const subtotal = producto.precio * cantidad;
+        total += subtotal;
+        cantidadTotal += cantidad;
 
-        const div = document.createElement("div");
-        div.className = "d-flex justify-content-between align-items-center mb-2";
-        div.innerHTML = `
+        const item = document.createElement("div");
+        item.className = "d-flex justify-content-between align-items-center mb-2";
+        item.innerHTML = `
           <div class="flex-grow-1 pe-2">
             <div class="fw-semibold text-truncate" title="${producto.nombre}">${producto.nombre}</div>
             <small class="text-muted">Cantidad: ${cantidad}</small>
           </div>
-          <span class="fw-bold">$${total}</span>
+          <span class="fw-bold">$${subtotal.toFixed(2)}</span>
         `;
-        carritoItems.appendChild(div);
+        carritoItems.appendChild(item);
       });
+
+      resumenTotal.textContent = `$${total.toFixed(2)}`;
+      contador.textContent = cantidadTotal;
     }
 
     btnCarrito.addEventListener("click", () => {
@@ -105,7 +137,7 @@
       actualizarResumenCarrito();
     });
 
-    actualizarResumenCarrito();
+    document.addEventListener("DOMContentLoaded", actualizarResumenCarrito);
   </script>
 </body>
 </html>

@@ -65,7 +65,7 @@ const vistaVitrina = (() => {
         if (totalPaginas <= 1)
             return;
         const ul = document.createElement("ul");
-        ul.className = "pagination justify-content-center mt-4";
+        ul.className = "pagination justify-content-end mt-4";
         for (let i = 1; i <= totalPaginas; i++) {
             const li = document.createElement("li");
             li.className = `page-item ${i === paginaActual ? "active" : ""}`;

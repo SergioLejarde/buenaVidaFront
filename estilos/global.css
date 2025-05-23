@@ -39,13 +39,13 @@ button:hover {
 
 /* ✅ Estilo de botones principales */
 .btn-success {
-  background-color: var(--verde-medio);
+  background-color: var(--amarillo);
   color: var(--texto-claro);
   border: none;
 }
 
 .btn-success:hover {
-  background-color: var(--verde-claro);
+  background-color: var(--amarillo-claro);
   color: var(--texto-oscuro);
 }
 
@@ -115,7 +115,7 @@ button:hover {
 }
 
 .modal-footer .btn-success {
-  background-color: var(--verde-claro);
+  background-color: var(--amarillo-claro);
 }
 
 /* 🧩 Estilo para sección de filtros (IU-06) */
