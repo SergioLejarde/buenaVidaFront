@@ -9,96 +9,49 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import { modeloVitrina } from "./modelo.js";
 import { vistaVitrina } from "./vista.js";
-import { modeloFavoritos } from "../favoritos/modelo.js";
-import { modeloCarrito } from "../carrito/modelo.js";
-const controladorVitrina = (() => {
+const vitrinaControlador = (() => {
     let paginaActual = 1;
-    let totalPaginas = 3;
-    const limite = 12;
-    const buscador = document.getElementById("buscador");
-    const btnBuscar = document.getElementById("btn-buscar");
-    const paginacion = document.getElementById("paginacion");
-    const contenedor = document.getElementById("contenedor-productos");
-    const inputMin = document.getElementById("precio-min");
-    const inputMax = document.getElementById("precio-max");
+    function configurarEventos() {
+        var _a, _b;
+        (_a = document.getElementById("btn-buscar")) === null || _a === void 0 ? void 0 : _a.addEventListener("click", () => {
+            paginaActual = 1;
+            cargarProductos();
+        });
+        (_b = document.getElementById("paginacion")) === null || _b === void 0 ? void 0 : _b.addEventListener("click", (e) => {
+            const target = e.target;
+            if (target.classList.contains("page-link")) {
+                const nuevaPagina = parseInt(target.dataset.pagina || "1");
+                if (!isNaN(nuevaPagina)) {
+                    paginaActual = nuevaPagina;
+                    cargarProductos();
+                }
+            }
+        });
+    }
     function cargarProductos() {
         return __awaiter(this, void 0, void 0, function* () {
-            const q = buscador.value.trim();
-            const min = parseFloat((inputMin === null || inputMin === void 0 ? void 0 : inputMin.value) || "0");
-            const max = parseFloat((inputMax === null || inputMax === void 0 ? void 0 : inputMax.value) || "99999");
+            var _a, _b, _c;
+            const q = (_a = document.getElementById("buscador")) === null || _a === void 0 ? void 0 : _a.value.trim();
+            const min = parseFloat((_b = document.getElementById("precio-min")) === null || _b === void 0 ? void 0 : _b.value);
+            const max = parseFloat((_c = document.getElementById("precio-max")) === null || _c === void 0 ? void 0 : _c.value);
             const filtros = {
-                page: paginaActual,
-                limit: limite,
                 q,
-                min,
-                max
+                page: paginaActual,
+                limit: 12,
             };
+            if (!isNaN(min))
+                filtros.min = min;
+            if (!isNaN(max))
+                filtros.max = max;
             try {
-                const { productos, totalPaginas: total } = yield modeloVitrina.obtenerProductos(filtros);
-                console.log("🟢 totalPaginas desde backend:", total);
-                totalPaginas = total;
+                const { productos, totalPaginas } = yield modeloVitrina.obtenerProductos(filtros);
                 vistaVitrina.renderProductos(productos);
                 vistaVitrina.renderPaginacion(totalPaginas, paginaActual);
             }
             catch (error) {
-                console.error("❌ Error cargando productos:", error);
-                vistaVitrina.renderProductos([]);
-                vistaVitrina.renderPaginacion(1, 1);
+                console.error("❌ Error al cargar productos:", error);
             }
         });
-    }
-    function configurarEventos() {
-        btnBuscar.addEventListener("click", () => {
-            paginaActual = 1;
-            cargarProductos();
-        });
-        paginacion.addEventListener("click", (e) => {
-            const btn = e.target.closest("button[data-pagina]");
-            if (btn) {
-                paginaActual = parseInt(btn.dataset.pagina || "1");
-                cargarProductos();
-            }
-        });
-        contenedor.addEventListener("click", (e) => __awaiter(this, void 0, void 0, function* () {
-            const target = e.target;
-            const favBtn = target.closest("button[data-fav]");
-            const cartBtn = target.closest("button[data-carrito]");
-            const token = localStorage.getItem("token");
-            const usuarioIdRaw = localStorage.getItem("usuarioId");
-            const usuarioId = usuarioIdRaw ? parseInt(usuarioIdRaw) : null;
-            if (!token || !usuarioId) {
-                alert("Debes iniciar sesión para usar esta función.");
-                return;
-            }
-            if (favBtn) {
-                const productoId = parseInt(favBtn.dataset.id || "0");
-                try {
-                    yield modeloFavoritos.agregarAFavoritos(usuarioId, productoId, token);
-                    favBtn.classList.remove("btn-outline-danger");
-                    favBtn.classList.add("btn-danger");
-                    favBtn.innerText = "❤️";
-                    favBtn.disabled = true;
-                }
-                catch (err) {
-                    console.error("❌ Error al agregar a favoritos:", err);
-                    alert("No se pudo agregar a favoritos.");
-                }
-            }
-            if (cartBtn) {
-                const productoId = parseInt(cartBtn.dataset.id || "0");
-                try {
-                    yield modeloCarrito.agregarAlCarrito(usuarioId, productoId, 1, token);
-                    cartBtn.classList.remove("btn-outline-success");
-                    cartBtn.classList.add("btn-success");
-                    cartBtn.innerText = "✔️";
-                    cartBtn.disabled = true;
-                }
-                catch (err) {
-                    console.error("❌ Error al agregar al carrito:", err);
-                    alert("No se pudo agregar al carrito.");
-                }
-            }
-        }));
     }
     function init() {
         configurarEventos();
@@ -106,4 +59,4 @@ const controladorVitrina = (() => {
     }
     return { init };
 })();
-document.addEventListener("DOMContentLoaded", controladorVitrina.init);
+document.addEventListener("DOMContentLoaded", vitrinaControlador.init);

@@ -33,22 +33,20 @@ const modeloVitrina = (() => {
     page = 1,
     limit = 12,
     q = "",
-    min = 0,
-    max = 99999,
+    min,
+    max,
     promo
   }: FiltrosProducto = {}): Promise<RespuestaProductos> {
     try {
       const params = new URLSearchParams({
         page: String(page),
         limit: String(limit),
-        q,
-        min: String(min),
-        max: String(max)
+        q
       });
 
-      if (promo !== undefined) {
-        params.append("promo", String(promo));
-      }
+      if (typeof min === "number") params.append("min", String(min));
+      if (typeof max === "number") params.append("max", String(max));
+      if (typeof promo === "boolean") params.append("promo", String(promo));
 
       const response = await fetch(`${URL_BASE}/api/productos?${params.toString()}`);
       if (!response.ok) throw new Error("Error al obtener productos");
